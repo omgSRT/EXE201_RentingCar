@@ -1,4 +1,13 @@
+using RentingCarRepositories.Repository;
+using RentingCarRepositories.RepositoryInterface;
+using RentingCarServices.Service;
+using RentingCarServices.ServiceInterface;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // Add services to the container.
 
