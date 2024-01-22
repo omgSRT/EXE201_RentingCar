@@ -41,14 +41,10 @@ namespace RentingCarDAO
                 throw new Exception();
             }
         }
-        public VehicleType GetVehicleTypeByName(string searchType)
+        public VehicleType? GetVehicleTypeByName(string searchType)
         {
             try
             {
-                if(searchType == null)
-                {
-                    return new VehicleType();
-                }
                 return db.Set<VehicleType>().Where(x => x.TypeName.Contains(searchType)).FirstOrDefault();
             }
             catch (Exception ex)
@@ -56,14 +52,10 @@ namespace RentingCarDAO
                 throw new Exception();
             }
         }
-        public VehicleType GetVehicleTypeById(long id)
+        public VehicleType? GetVehicleTypeById(long id)
         {
             try
             {
-                if (id == null)
-                {
-                    return new VehicleType();
-                }
                 return db.Set<VehicleType>().Where(x => x.VehicleTypeId == id).FirstOrDefault();
             }
             catch (Exception ex)
