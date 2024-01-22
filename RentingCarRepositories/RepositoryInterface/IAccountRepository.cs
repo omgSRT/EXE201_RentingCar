@@ -15,5 +15,7 @@ namespace RentingCarRepositories.RepositoryInterface
 
         public void CreateAccount(Account account);
 
+        public List<Account> GetAllAccounts();
+
     }
 }

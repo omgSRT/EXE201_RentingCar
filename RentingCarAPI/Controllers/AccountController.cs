@@ -37,9 +37,14 @@ namespace RentingCarAPI.Controllers
 
         [HttpGet(Name = "Search Account By Email")]
         public Account GetAccountByEmail(string email)
-        {
-            Account account = _accountService.GetAccountByEmail(email);
-            return account;
+        {        
+            return _accountService.GetAccountByEmail(email);
+        }
+
+        [HttpGet("SearchAllAccount", Name = "Search All Account")]
+        public List<Account> GetAllAccount()
+        {            
+            return _accountService.GetAllAccounts(); 
         }
     }
 }
