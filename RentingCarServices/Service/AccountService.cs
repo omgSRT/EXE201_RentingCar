@@ -59,5 +59,10 @@ namespace RentingCarServices.Service
             }
             return null;
         }
+
+        public List<Account> GetAllAccounts()
+        {
+            return _accountRepository.GetAllAccounts();
+        }
     }
 }
