@@ -31,7 +31,10 @@ namespace RentingCarDAO
 
         public List<Account> GetAccounts()
         {
-            return db.Accounts.ToList();
+            return db.Accounts
+                .Include(account => account.Role)
+                .Include(account => account.Status)
+                .ToList();
         }
 
         public Account GetAccountByEmail(string email)
@@ -88,6 +91,5 @@ namespace RentingCarDAO
 
         }
 
-        
     }
 }

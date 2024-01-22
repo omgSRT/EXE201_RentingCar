@@ -30,5 +30,10 @@ namespace RentingCarRepositories.Repository
         {
             return _accountDAO.GetAccountByEmail(email);
         }
+
+        public List<Account> GetAllAccounts()
+        {
+            return _accountDAO.GetAccounts();
+        }
     }
 }

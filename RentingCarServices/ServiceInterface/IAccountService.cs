@@ -15,5 +15,7 @@ namespace RentingCarServices.ServiceInterface
 
         public void CreateAccount(string email, string username, string password, int? phone);
 
+        public List<Account> GetAllAccounts();
+
     }
 }
