@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using RentingCarDAO;
 using RentingCarRepositories.RepositoryInterface;
 using System;
@@ -11,9 +13,11 @@ namespace RentingCarRepositories.Repository
 {
     public class AccountRepository : IAccountRepository
     {
+        
         private AccountDAO _accountDAO;
         public AccountRepository()
         {
+            
             _accountDAO = new AccountDAO();
         }
         public void CreateAccount(Account account)

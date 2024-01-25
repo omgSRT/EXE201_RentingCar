@@ -17,5 +17,7 @@ namespace RentingCarServices.ServiceInterface
 
         public List<Account> GetAllAccounts();
 
+        Task<string> SignIn(string email, string password);
+
     }
 }

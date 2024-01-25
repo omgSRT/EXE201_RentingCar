@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace BusinessObjects.Models
 {
-    public partial class exe201Context : DbContext
+    public partial class exe201Context : IdentityDbContext<Account>
     {
         public exe201Context()
         {
@@ -49,6 +51,11 @@ namespace BusinessObjects.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+            {
+                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+                // Các cấu hình khác nếu cần
+            });
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.ToTable("Account");

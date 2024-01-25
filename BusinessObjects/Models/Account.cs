@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessObjects.Models
 {
-    public partial class Account
+    public partial class Account : IdentityUser
     {
         public Account()
         {
@@ -12,8 +13,13 @@ namespace BusinessObjects.Models
         }
 
         public long AccountId { get; set; }
+        
+        override
         public string UserName { get; set; } = null!;
+
+        override
         public string Email { get; set; } = null!;
+
         public string Password { get; set; } = null!;
         public int Phone { get; set; }
         public long RoleId { get; set; }
