@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace RentingCarServices.ServiceInterface
 {
     public interface IRoleService
     {
+        List<Role> GetRoles();
+        Role? GetRoleById(long id);
+        bool Update(Role role);
     }
 }

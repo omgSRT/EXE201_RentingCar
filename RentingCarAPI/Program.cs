@@ -14,10 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+
 builder.Services.AddScoped<IAccountService, AccountService>();
+
 //builder.Services.AddScoped<IConfiguration>();
 //builder.Services.AddSingleton<UserManager>();
 //builder.Services.AddSingleton<SignInManager>();
+
+builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IStatusService, StatusService>();
+
 
 // Add services to the container.
 

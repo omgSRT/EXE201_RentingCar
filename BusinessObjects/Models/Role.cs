@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
@@ -12,6 +13,8 @@ namespace BusinessObjects.Models
         }
 
         public long RoleId { get; set; }
+        [Required]
+        [MaxLength(50)]
         public string? RoleName { get; set; }
 
         [JsonIgnore]
