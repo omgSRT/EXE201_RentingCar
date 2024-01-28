@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RentingCarServices.ServiceInterface;
+using System.Security.Claims;
 
 namespace RentingCarAPI.Controllers
 {
@@ -39,6 +41,15 @@ namespace RentingCarAPI.Controllers
                 return BadRequest();
             }
             return Ok("Update Successfully");
+        }
+
+        [HttpGet("checkRole")]
+        public IActionResult Example()
+        {
+            var roles = User.FindFirst(ClaimTypes.Role)?.Value;
+            _logger.LogInformation($"User roles: {roles}");
+
+            return Ok("Example");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace BusinessObjects.Models
     {
         public Review()
         {
-            Images = new HashSet<Image>();
+            ReviewImages = new HashSet<ReviewImage>();
         }
 
         public long ReviewId { get; set; }
@@ -20,6 +20,6 @@ namespace BusinessObjects.Models
         public virtual Account Account { get; set; } = null!;
         public virtual Status Status { get; set; } = null!;
         public virtual Vehicle Vehicle { get; set; } = null!;
-        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<ReviewImage> ReviewImages { get; set; }
     }
 }

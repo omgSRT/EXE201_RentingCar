@@ -13,11 +13,11 @@ namespace RentingCarServices.ServiceInterface
 
         public bool DeleteAccountByEmail(string email);
 
-        public void CreateAccount(string email, string username, string password, int? phone);
+        public void CreateAccount(string email, string username, string password, string phone);
 
         public List<Account> GetAllAccounts();
 
-        Task<string> SignIn(string email, string password);
+        string SignIn(string email, string password);
 
     }
 }

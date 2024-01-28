@@ -30,7 +30,7 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpPost("CreateAccount",Name = "Create Account")]
-        public IActionResult CreateAccount(string email, string username , string password, int? phone)
+        public IActionResult CreateAccount(string email, string username , string password, string phone)
         {
             _accountService.CreateAccount(email, username,  password, phone);
             return Ok("Add Successfully");
@@ -43,8 +43,10 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpGet("SearchAllAccount", Name = "Search All Account")]
+        [Authorize(Roles = "user")]
         public List<Account> GetAllAccount()
-        {            
+        {
+            
             return _accountService.GetAllAccounts(); 
         }
 
@@ -52,9 +54,9 @@ namespace RentingCarAPI.Controllers
         public IActionResult SignIn(string email, string password)
         {
             var result = _accountService.SignIn(email, password);
-            if (result.IsCompletedSuccessfully)
-            {
-                return Ok("Login Successfully");
+            if (result != null)
+            {              
+                return Ok(result);
             }
             return Unauthorized();
         }

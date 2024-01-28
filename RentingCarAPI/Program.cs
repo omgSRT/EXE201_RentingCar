@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RentingCarRepositories.Repository;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.Service;
 using RentingCarServices.ServiceInterface;
+using SchoolManagementAPI.Identity;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,12 +20,13 @@ builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
-builder.Services.AddScoped<IAccountService, AccountService>();
+
 
 //builder.Services.AddScoped<IConfiguration>();
 //builder.Services.AddSingleton<UserManager>();
 //builder.Services.AddSingleton<SignInManager>();
 
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
@@ -36,9 +39,50 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<exe201Context>();
-builder.Services.AddIdentity<Account, IdentityRole>()
-    .AddEntityFrameworkStores<exe201Context>()
-    .AddDefaultTokenProviders();
+//builder.Services.AddIdentity<Account, IdentityRole>()
+//    .AddEntityFrameworkStores<exe201Context>()
+//    .AddDefaultTokenProviders();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignIn", Version = "v1" });
+
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "JWT Authorization header using the Bearer scheme",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT", // Đặt định dạng Bearer là "JWT"
+        In = ParameterLocation.Header, // Xác định vị trí của token trong yêu cầu (Header)
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
+
+    c.AddSecurityDefinition("Bearer", securityScheme);
+
+    var securityRequirement = new OpenApiSecurityRequirement
+    {
+        { securityScheme, new[] { "Bearer" } }
+    };
+
+    c.AddSecurityRequirement(securityRequirement);
+});
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("1", policy =>
+//    {
+//        policy.Requirements.Add(new HasScopeRequirement("read:messages", "http://localhost:5063", "admin"));
+//    });
+//});
+//builder.Services.AddAuthorization(x =>
+//{
+//    x.AddPolicy("1",
+//        p => p.Requirements.Add(new HasScopeRequirement("1", "http://localhost:5063")));
+//});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -53,6 +97,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        RoleClaimType = ClaimTypes.Role,
         ValidAudience =builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey =  new SymmetricSecurityKey(Encoding
@@ -68,6 +113,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

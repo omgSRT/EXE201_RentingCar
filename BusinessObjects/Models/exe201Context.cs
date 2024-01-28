@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace BusinessObjects.Models
 {
-    public partial class exe201Context : IdentityDbContext<Account>
+    public partial class exe201Context : DbContext
     {
         public exe201Context()
         {
@@ -20,10 +18,10 @@ namespace BusinessObjects.Models
         }
 
         public virtual DbSet<Account> Accounts { get; set; } = null!;
-        public virtual DbSet<AccountProfile> AccountProfiles { get; set; } = null!;
-        public virtual DbSet<Image> Images { get; set; } = null!;
+        public virtual DbSet<ImagesLicenseCard> ImagesLicenseCards { get; set; } = null!;
         public virtual DbSet<Reservation> Reservations { get; set; } = null!;
         public virtual DbSet<Review> Reviews { get; set; } = null!;
+        public virtual DbSet<ReviewImage> ReviewImages { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Status> Statuses { get; set; } = null!;
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
@@ -37,7 +35,6 @@ namespace BusinessObjects.Models
                 optionsBuilder.UseSqlServer(GetConnectionString());
             }
         }
-
         private string GetConnectionString()
         {
             IConfiguration config = new ConfigurationBuilder()
@@ -48,19 +45,23 @@ namespace BusinessObjects.Models
 
             return strConn;
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<IdentityUserRole<string>>(entity =>
-            {
-                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
-                // Các cấu hình khác nếu cần
-            });
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.ToTable("Account");
 
                 entity.Property(e => e.AccountId).HasColumnName("account_id");
+
+                entity.Property(e => e.Address)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("address");
+
+                entity.Property(e => e.Country)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("country");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
@@ -69,12 +70,13 @@ namespace BusinessObjects.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("password")
-                    .IsFixedLength();
+                    .HasColumnName("password");
 
-                entity.Property(e => e.Phone).HasColumnName("phone");
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("phone");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
@@ -97,61 +99,32 @@ namespace BusinessObjects.Models
                     .HasConstraintName("FK_Account_Status");
             });
 
-            modelBuilder.Entity<AccountProfile>(entity =>
-            {
-                entity.ToTable("Account_Profile");
-
-                entity.HasIndex(e => e.AccountId, "UQ__Account___46A222CCAB80AB61")
-                    .IsUnique();
-
-                entity.Property(e => e.AccountProfileId).HasColumnName("account_profile_id");
-
-                entity.Property(e => e.AccountId).HasColumnName("account_id");
-
-                entity.Property(e => e.Address)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("address")
-                    .IsFixedLength();
-
-                entity.Property(e => e.Country)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("country")
-                    .IsFixedLength();
-
-                entity.HasOne(d => d.Account)
-                    .WithOne(p => p.AccountProfile)
-                    .HasForeignKey<AccountProfile>(d => d.AccountId)
-                    .HasConstraintName("FK_AccountProfile_Account");
-            });
-
-            modelBuilder.Entity<Image>(entity =>
+            modelBuilder.Entity<ImagesLicenseCard>(entity =>
             {
                 entity.HasKey(e => e.ImagesId)
-                    .HasName("PK__Images__FA2651F7718498B6");
+                    .HasName("PK__Images_L__FA2651F75FE4F83B");
+
+                entity.ToTable("Images_License_Card");
 
                 entity.Property(e => e.ImagesId).HasColumnName("images_id");
 
+                entity.Property(e => e.AccountId).HasColumnName("account_id");
+
                 entity.Property(e => e.ImagesLink)
-                    .HasMaxLength(255)
+                    .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("images_link")
-                    .IsFixedLength();
+                    .HasColumnName("images_link");
 
-                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+                entity.Property(e => e.ImagesType)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("images_type");
 
-                entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
-
-                entity.HasOne(d => d.Review)
-                    .WithMany(p => p.Images)
-                    .HasForeignKey(d => d.ReviewId)
-                    .HasConstraintName("FK_Images_Review");
-
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.Images)
-                    .HasForeignKey(d => d.VehicleId)
-                    .HasConstraintName("FK_Images_Vehicle");
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.ImagesLicenseCards)
+                    .HasForeignKey(d => d.AccountId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Images_Account");
             });
 
             modelBuilder.Entity<Reservation>(entity =>
@@ -211,9 +184,7 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.AccountId).HasColumnName("account_id");
 
-                entity.Property(e => e.Description)
-                    .HasMaxLength(255)
-                    .HasColumnName("description");
+                entity.Property(e => e.Description).HasColumnName("description");
 
                 entity.Property(e => e.Point).HasColumnName("point");
 
@@ -240,6 +211,28 @@ namespace BusinessObjects.Models
                     .HasConstraintName("FK_Review_Vehicle");
             });
 
+            modelBuilder.Entity<ReviewImage>(entity =>
+            {
+                entity.HasKey(e => e.ImagesId)
+                    .HasName("PK__Review_I__FA2651F7793217A7");
+
+                entity.ToTable("Review_Images");
+
+                entity.Property(e => e.ImagesId).HasColumnName("images_id");
+
+                entity.Property(e => e.ImagesLink)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("images_link");
+
+                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+
+                entity.HasOne(d => d.Review)
+                    .WithMany(p => p.ReviewImages)
+                    .HasForeignKey(d => d.ReviewId)
+                    .HasConstraintName("FK_Images_Review");
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
@@ -248,7 +241,9 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.RoleName)
                     .HasMaxLength(50)
-                    .HasColumnName("role_name");
+                    .IsUnicode(false)
+                    .HasColumnName("role_name")
+                    .IsFixedLength();
             });
 
             modelBuilder.Entity<Status>(entity =>
@@ -260,8 +255,7 @@ namespace BusinessObjects.Models
                 entity.Property(e => e.StatusName)
                     .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("status_name")
-                    .IsFixedLength();
+                    .HasColumnName("status_name");
             });
 
             modelBuilder.Entity<Vehicle>(entity =>
@@ -279,26 +273,22 @@ namespace BusinessObjects.Models
                 entity.Property(e => e.Engine)
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("engine")
-                    .IsFixedLength();
+                    .HasColumnName("engine");
 
                 entity.Property(e => e.Fueltype)
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("fueltype")
-                    .IsFixedLength();
+                    .HasColumnName("fueltype");
 
                 entity.Property(e => e.LicensePlate)
-                    .HasMaxLength(20)
+                    .HasMaxLength(30)
                     .IsUnicode(false)
-                    .HasColumnName("license_plate")
-                    .IsFixedLength();
+                    .HasColumnName("license_plate");
 
                 entity.Property(e => e.Options)
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("options")
-                    .IsFixedLength();
+                    .HasColumnName("options");
 
                 entity.Property(e => e.Passengers).HasColumnName("passengers");
 
@@ -311,8 +301,7 @@ namespace BusinessObjects.Models
                 entity.Property(e => e.Suitcase)
                     .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("suitcase")
-                    .IsFixedLength();
+                    .HasColumnName("suitcase");
 
                 entity.Property(e => e.VehicleName)
                     .HasMaxLength(100)

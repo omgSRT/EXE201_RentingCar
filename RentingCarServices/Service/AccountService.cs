@@ -19,20 +19,15 @@ namespace RentingCarServices.Service
     public class AccountService : IAccountService
     {
         private readonly IConfiguration _configuration;
-        private readonly UserManager<Account> _userManager;
-        private readonly SignInManager<Account> _signInManager;
         public readonly IAccountRepository _accountRepository;
 
-        public AccountService(IAccountRepository accountRepository, UserManager<Account> userManager,
-            SignInManager<Account> signInManager, IConfiguration configuration)
+        public AccountService(IAccountRepository accountRepository, IConfiguration configuration)
         {
-            this._userManager = userManager;
-            this._signInManager = signInManager;
             this._configuration = configuration;
             _accountRepository = accountRepository;
         }
 
-        public void CreateAccount(string email, string username,  string password, int? phone)
+        public void CreateAccount(string email, string username,  string password, string phone)
         {
             if (email != null && username!= null && password!= null && phone!=null)
             {
@@ -55,7 +50,7 @@ namespace RentingCarServices.Service
                         Email = email,
                         UserName = username,
                         Password = hashed,
-                        Phone = phone??0,
+                        Phone = phone,
                         RoleId = 1,
                         StatusId = 1,
                         
@@ -92,27 +87,43 @@ namespace RentingCarServices.Service
             return _accountRepository.GetAllAccounts();
         }
 
-        public async Task<string> SignIn(string email, string password)
+
+        private const string TokenSecret = "RentingCarEXE201";
+        private static readonly TimeSpan TokenLifeTime = TimeSpan.FromMinutes(30);
+        public string SignIn(string email, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
-            if (!result.Succeeded)
+            var existedUser = _accountRepository.GetAccountByEmail(email);
+
+            if (existedUser != null && existedUser.Password.Equals(password))
             {
-                return string.Empty;
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(TokenSecret);
+
+                var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Sub, existedUser.Email),
+            new(JwtRegisteredClaimNames.Email, existedUser.Email),
+            new(ClaimTypes.Name, existedUser.UserName),
+            new(ClaimTypes.Role, existedUser.Role.RoleName), // Assume all authenticated users have the "user" role
+        };
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.UtcNow.Add(TokenLifeTime),
+                    Issuer = "http://localhost:5063",
+                    Audience = "User",
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                        SecurityAlgorithms.HmacSha256Signature),
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwt = tokenHandler.WriteToken(token);
+                return jwt;
             }
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-            var authenkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(30),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authenkey, SecurityAlgorithms.HmacSha512)
-                ); 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            return string.Empty;
         }
     }
 }

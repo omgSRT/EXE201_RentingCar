@@ -7,7 +7,6 @@ namespace BusinessObjects.Models
     {
         public Vehicle()
         {
-            Images = new HashSet<Image>();
             Reviews = new HashSet<Review>();
         }
 
@@ -30,7 +29,6 @@ namespace BusinessObjects.Models
         public virtual Reservation? Reservation { get; set; }
         public virtual Status Status { get; set; } = null!;
         public virtual VehicleType VehicleType { get; set; } = null!;
-        public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }
