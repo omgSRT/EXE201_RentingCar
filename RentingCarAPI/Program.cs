@@ -93,6 +93,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
         RoleClaimType = ClaimTypes.Role,
         ValidAudience =builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
