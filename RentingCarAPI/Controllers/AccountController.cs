@@ -43,7 +43,7 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpGet("SearchAllAccount", Name = "Search All Account")]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "Admin")]
         public List<Account> GetAllAccount()
         {
             

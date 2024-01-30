@@ -20,8 +20,6 @@ builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
-
-
 //builder.Services.AddScoped<IConfiguration>();
 //builder.Services.AddSingleton<UserManager>();
 //builder.Services.AddSingleton<SignInManager>();
@@ -37,8 +35,6 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<exe201Context>();
 //builder.Services.AddIdentity<Account, IdentityRole>()
 //    .AddEntityFrameworkStores<exe201Context>()
 //    .AddDefaultTokenProviders();

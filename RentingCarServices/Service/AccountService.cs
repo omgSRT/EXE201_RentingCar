@@ -55,9 +55,7 @@ namespace RentingCarServices.Service
                         StatusId = 1,
                         
                     };
-                    _accountRepository.CreateAccount(account);
-                
-
+                _accountRepository.CreateAccount(account);
             }
         }
 
@@ -102,10 +100,10 @@ namespace RentingCarServices.Service
                 var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Sub, existedUser.Email),
-            new(JwtRegisteredClaimNames.Email, existedUser.Email),
+            new(JwtRegisteredClaimNames.Sub, existedUser.Email.Trim()),
+            new(JwtRegisteredClaimNames.Email, existedUser.Email.Trim()),
             new(ClaimTypes.Name, existedUser.UserName),
-            new(ClaimTypes.Role, existedUser.Role.RoleName), // Assume all authenticated users have the "user" role
+            new(ClaimTypes.Role, existedUser.Role.RoleName.Trim()),
         };
 
                 var tokenDescriptor = new SecurityTokenDescriptor
