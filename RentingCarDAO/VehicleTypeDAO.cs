@@ -36,7 +36,7 @@ namespace RentingCarDAO
             {
                 return db.Set<VehicleType>().ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -47,7 +47,7 @@ namespace RentingCarDAO
             {
                 return db.Set<VehicleType>().Where(x => x.TypeName.Contains(searchType)).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -58,7 +58,7 @@ namespace RentingCarDAO
             {
                 return db.Set<VehicleType>().Where(x => x.VehicleTypeId == id).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -84,7 +84,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw new Exception();
             }
@@ -116,7 +116,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -138,7 +138,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

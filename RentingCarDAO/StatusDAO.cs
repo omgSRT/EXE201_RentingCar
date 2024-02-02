@@ -35,7 +35,7 @@ namespace RentingCarDAO
             {
                 return db.Set<Status>().ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -46,7 +46,7 @@ namespace RentingCarDAO
             {
                 return db.Set<Status>().Where(x => x.StatusId == id).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -78,7 +78,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

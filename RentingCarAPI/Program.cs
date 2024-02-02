@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,30 +15,19 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+//add cloudinary
+#region Cloudinary
+CloudinaryDotNet.Account cloudinaryAccount = new CloudinaryDotNet.Account
+{
+    Cloud = builder.Configuration["Cloudinary:CloudName"],
+    ApiKey = builder.Configuration["Cloudinary:ApiKey"],
+    ApiSecret = builder.Configuration["Cloudinary:ApiSecret"],
+};
+Cloudinary cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary);
+#endregion
 
-//builder.Services.AddScoped<IConfiguration>();
-//builder.Services.AddSingleton<UserManager>();
-//builder.Services.AddSingleton<SignInManager>();
-
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IStatusService, StatusService>();
-
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddIdentity<Account, IdentityRole>()
-//    .AddEntityFrameworkStores<exe201Context>()
-//    .AddDefaultTokenProviders();
+//add swagger and swagger authorization
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignIn", Version = "v1" });
@@ -67,6 +57,34 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(securityRequirement);
 });
 
+// Add services to the container.
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
+//builder.Services.AddScoped<IConfiguration>();
+//builder.Services.AddSingleton<UserManager>();
+//builder.Services.AddSingleton<SignInManager>();
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IStatusService, StatusService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddIdentity<Account, IdentityRole>()
+//    .AddEntityFrameworkStores<exe201Context>()
+//    .AddDefaultTokenProviders();
+builder.Services.AddSwaggerGen();
+
 //builder.Services.AddAuthorization(options =>
 //{
 //    options.AddPolicy("1", policy =>
@@ -95,7 +113,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
         RoleClaimType = ClaimTypes.Role,
-        ValidAudience =builder.Configuration["JWT:ValidAudience"],
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey =  new SymmetricSecurityKey(Encoding
         .UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
