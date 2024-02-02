@@ -27,9 +27,9 @@ namespace RentingCarServices.Service
             _accountRepository = accountRepository;
         }
 
-        public void CreateAccount(string email, string username,  string password, string phone)
+        public void CreateAccount(string email, string username, string password, string phone)
         {
-            if (email != null && username!= null && password!= null && phone!=null)
+            if (email != null && username != null && password != null && phone != null)
             {
 
                 // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
@@ -46,15 +46,15 @@ namespace RentingCarServices.Service
                     iterationCount: 100000,
                     numBytesRequested: 512 / 8));
                 Account account = new Account
-                    {
-                        Email = email,
-                        UserName = username,
-                        Password = hashed,
-                        Phone = phone,
-                        RoleId = 1,
-                        StatusId = 1,
-                        
-                    };
+                {
+                    Email = email,
+                    UserName = username,
+                    Password = hashed,
+                    Phone = phone,
+                    RoleId = 1,
+                    StatusId = 1,
+
+                };
                 _accountRepository.CreateAccount(account);
             }
         }
@@ -98,13 +98,13 @@ namespace RentingCarServices.Service
                 var key = Encoding.UTF8.GetBytes(TokenSecret);
 
                 var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Sub, existedUser.Email.Trim()),
-            new(JwtRegisteredClaimNames.Email, existedUser.Email.Trim()),
-            new(ClaimTypes.Name, existedUser.UserName),
-            new(ClaimTypes.Role, existedUser.Role.RoleName.Trim()),
-        };
+                {
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new(JwtRegisteredClaimNames.Sub, existedUser.Email.Trim()),
+                    new(JwtRegisteredClaimNames.Email, existedUser.Email.Trim()),
+                    new(ClaimTypes.Name, existedUser.UserName),
+                    new(ClaimTypes.Role, existedUser.Role.RoleName.Trim()),
+                };
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {

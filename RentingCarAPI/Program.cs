@@ -30,7 +30,7 @@ builder.Services.AddSingleton(cloudinary);
 //add swagger and swagger authorization
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignIn", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Renting Vehicles", Version = "v1" });
 
     var securityScheme = new OpenApiSecurityScheme
     {
