@@ -12,7 +12,7 @@ namespace RentingCarServices.Service
 {
     public class ReviewService : IReviewService
     {
-        public readonly IReviewRepository _reviewRepository;
+        private readonly IReviewRepository _reviewRepository;
 
         public ReviewService(IReviewRepository reviewRepository)
         {
@@ -35,9 +35,8 @@ namespace RentingCarServices.Service
             return imageList;
         }
 
-        public bool AddReviewImage(IFormFile file)
+        public bool AddReviewImage(ReviewImage image)
         {
-            ReviewImage image = null;
             return _reviewRepository.AddReviewImage(image);
         }
     }

@@ -10,7 +10,7 @@ namespace RentingCarServices.ServiceInterface
 {
     public interface IReviewService
     {
-        bool AddReviewImage(IFormFile file);
+        bool AddReviewImage(ReviewImage image);
         IEnumerable<ReviewImage> GetReviewImages(int page, int quantity);
     }
 }

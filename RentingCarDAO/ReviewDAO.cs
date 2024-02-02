@@ -59,10 +59,6 @@ namespace RentingCarDAO
                 {
                     return false;
                 }
-                if (image.ImagesLink?.Trim().Length == 0)
-                {
-                    return false;
-                }
                 db.Add(image);
                 db.SaveChanges();
                 return true;
