@@ -67,13 +67,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if (vehicleType == null || vehicleType.TypeName.Trim().Equals(string.Empty))
-                {
-                    return false;
-                }
-                if(vehicleType.TypeName.Trim().Length > 50) {
-                    return false;
-                }
                 VehicleType existVehicleType = db.Set<VehicleType>()
                     .FirstOrDefault(x => x.TypeName.Equals(vehicleType.TypeName));
                 if (existVehicleType != null)
@@ -93,14 +86,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if (vehicleType == null || vehicleType.TypeName.Trim().Equals(string.Empty))
-                {
-                    return false;
-                }
-                if (vehicleType.TypeName.Trim().Length > 50)
-                {
-                    return false;
-                }
                 VehicleType existVehicleType = db.Set<VehicleType>()
                     .FirstOrDefault(x => x.TypeName.Equals(vehicleType.TypeName));
                 if (existVehicleType != null)
@@ -125,10 +110,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if(vehicleType == null)
-                {
-                    return false;
-                }
                 var checkExist = db.Accounts.Find(vehicleType.VehicleTypeId);
                 if (checkExist != null)
                 {

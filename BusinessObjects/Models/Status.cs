@@ -21,7 +21,9 @@ namespace BusinessObjects.Models
 
         [JsonIgnore]
         public virtual ICollection<Account> Accounts { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Review> Reviews { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Vehicle> Vehicles { get; set; }
     }
 }

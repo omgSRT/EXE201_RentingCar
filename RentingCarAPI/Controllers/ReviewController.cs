@@ -33,9 +33,8 @@ namespace RentingCarAPI.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new Response
+                return BadRequest(new ResponseVM
                 {
-                    IsSuccess = false,
                     Message = "Cannot get review images list"
                 });
             }
@@ -47,9 +46,8 @@ namespace RentingCarAPI.Controllers
             {
                 if (file == null || file.Length <= 0)
                 {
-                    return BadRequest(new Response
+                    return BadRequest(new ResponseVM
                     {
-                        IsSuccess = false,
                         Message = $"Cannot Upload Image",
                         Errors = new string[] { "File is null" }
                     });
@@ -73,25 +71,22 @@ namespace RentingCarAPI.Controllers
                 var check = _reviewService.AddReviewImage(uploadImage);
                 if (!check)
                 {
-                    return BadRequest(new Response
+                    return BadRequest(new ResponseVM
                     {
-                        IsSuccess = false,
                         Message = $"Cannot Upload Image {file.FileName}",
                         Errors = new string[] { "Cannot Upload Image" }
                     });
                 }
-                return Ok(new ResponseWithEntity<ReviewImage>
+                return Ok(new ResponseVMWithEntity<ReviewImage>
                 {
-                    IsSuccess = true,
                     Message = $"Successfully Upload Image {file.FileName}",
                     Entity = uploadImage
                 });
             }
             catch (Exception)
             {
-                return BadRequest(new Response
+                return BadRequest(new ResponseVM
                 {
-                    IsSuccess = false,
                     Message = $"Cannot Upload Image {file.FileName}",
                     Errors = new string[] { "Cannot Upload Image" }
                 });
