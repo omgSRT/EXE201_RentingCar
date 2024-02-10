@@ -37,7 +37,6 @@ builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
-builder.Services.CustomSwagger();
 
 //builder.Services.AddScoped<IConfiguration>();
 //builder.Services.AddSingleton<UserManager>();
