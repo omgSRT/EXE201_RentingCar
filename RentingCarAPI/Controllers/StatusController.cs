@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObjects.Models;
+using Microsoft.AspNetCore.Mvc;
+using RentingCarAPI.ViewModel;
 using RentingCarServices.Service;
 using RentingCarServices.ServiceInterface;
 
@@ -17,18 +19,35 @@ namespace RentingCarAPI.Controllers
             _statusService = statusService;
         }
         [HttpGet("getStatuses")]
-        public IActionResult GetStatuses()
+        [ProducesResponseType(typeof(List<Status>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        public ActionResult<List<Status>> GetStatuses()
         {
             var list = _statusService.GetStatuses();
             if(!list.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseVM
+                {
+                    Message = "There's no data",
+                    Errors = new string[] {"There's no data in database"}
+                });
             }
             return Ok(list);
         }
         [HttpPut("updateStatus/{id}")]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Status>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Status>), StatusCodes.Status400BadRequest)]
         public IActionResult Update([FromRoute] long id, string name)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Invalid Input",
+                    Errors = new string[] { "Name is null", "Name doesn't have 50 characters" }
+                });
+            }
             var status = _statusService.GetStatusById(id);
             if (status != null)
             {
@@ -37,9 +56,18 @@ namespace RentingCarAPI.Controllers
             bool check = _statusService.Update(status);
             if (!check)
             {
-                return BadRequest();
+                return BadRequest(new ResponseVMWithEntity<Status>
+                {
+                    Message = "Server Error. Cannot Update",
+                    Entity = status,
+                    Errors = new string[] {"Invalid Data to Database", "Cannot Update or Save to Database" }
+                });
             }
-            return Ok("Update Successfully");
+            return Ok(new ResponseVMWithEntity<Status>
+            {
+                Message = "Update Successfully",
+                Entity = status
+            });
         }
     }
 }

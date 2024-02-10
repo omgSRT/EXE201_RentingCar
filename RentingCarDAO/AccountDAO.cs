@@ -46,7 +46,7 @@ namespace RentingCarDAO
                     .Include("Status")
                     .FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -65,7 +65,7 @@ namespace RentingCarDAO
                 }
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception("Delete Fail");
             }
@@ -83,7 +83,7 @@ namespace RentingCarDAO
                     db.SaveChanges();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception("Create Fail");
             }

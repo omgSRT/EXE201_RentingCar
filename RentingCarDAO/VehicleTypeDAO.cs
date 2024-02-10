@@ -36,7 +36,7 @@ namespace RentingCarDAO
             {
                 return db.Set<VehicleType>().ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -47,7 +47,7 @@ namespace RentingCarDAO
             {
                 return db.Set<VehicleType>().Where(x => x.TypeName.Contains(searchType)).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -58,7 +58,7 @@ namespace RentingCarDAO
             {
                 return db.Set<VehicleType>().Where(x => x.VehicleTypeId == id).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -67,13 +67,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if (vehicleType == null || vehicleType.TypeName.Trim().Equals(string.Empty))
-                {
-                    return false;
-                }
-                if(vehicleType.TypeName.Trim().Length > 50) {
-                    return false;
-                }
                 VehicleType existVehicleType = db.Set<VehicleType>()
                     .FirstOrDefault(x => x.TypeName.Equals(vehicleType.TypeName));
                 if (existVehicleType != null)
@@ -84,7 +77,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw new Exception();
             }
@@ -93,14 +86,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if (vehicleType == null || vehicleType.TypeName.Trim().Equals(string.Empty))
-                {
-                    return false;
-                }
-                if (vehicleType.TypeName.Trim().Length > 50)
-                {
-                    return false;
-                }
                 VehicleType existVehicleType = db.Set<VehicleType>()
                     .FirstOrDefault(x => x.TypeName.Equals(vehicleType.TypeName));
                 if (existVehicleType != null)
@@ -116,7 +101,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -125,10 +110,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if(vehicleType == null)
-                {
-                    return false;
-                }
                 var checkExist = db.Accounts.Find(vehicleType.VehicleTypeId);
                 if (checkExist != null)
                 {
@@ -138,7 +119,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using RentingCarServices.ServiceInterface;
+using RentingCarAPI.ViewModel;
 using System.Security.Claims;
 
 namespace RentingCarAPI.Controllers
@@ -17,19 +18,36 @@ namespace RentingCarAPI.Controllers
             _logger = logger;
             _roleService = roleService;
         }
-        [HttpGet("getRoles")]
+        [HttpGet("getall")]
+        [ProducesResponseType(typeof(List<Role>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetStatuses()
         {
             var list = _roleService.GetRoles();
             if(!list.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseVM
+                {
+                    Message = "There's no data",
+                    Errors = new string[] {"There's no data in database"}
+                });
             }
             return Ok(list);
         }
         [HttpPut("updateRole/{id}")]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Role>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Role>), StatusCodes.Status400BadRequest)]
         public IActionResult Update([FromRoute] long id, string name)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Invalid Input",
+                    Errors = new string[] {"Name is null", "Name doesn't have 50 characters"}
+                });
+            }
             var role = _roleService.GetRoleById(id);
             if(role != null)
             {
@@ -38,9 +56,18 @@ namespace RentingCarAPI.Controllers
             bool check = _roleService.Update(role);
             if (!check)
             {
-                return BadRequest();
+                return BadRequest(new ResponseVMWithEntity<Role>
+                {
+                    Message = "Server Error. Cannot Update",
+                    Entity = role,
+                    Errors = new string[] {"Invalid Data to Database", "Cannot Update or Save to Database" }
+                });
             }
-            return Ok("Update Successfully");
+            return Ok(new ResponseVMWithEntity<Role>
+            {
+                Message = "Update Successfully",
+                Entity = role
+            });
         }
 
         [HttpGet("checkRole")]

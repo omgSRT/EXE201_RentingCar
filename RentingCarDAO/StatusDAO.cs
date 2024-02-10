@@ -35,7 +35,7 @@ namespace RentingCarDAO
             {
                 return db.Set<Status>().ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -46,7 +46,7 @@ namespace RentingCarDAO
             {
                 return db.Set<Status>().Where(x => x.StatusId == id).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -55,14 +55,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if (status == null || status.StatusName.Trim().Equals(string.Empty))
-                {
-                    return false;
-                }
-                if (status.StatusName.Trim().Length > 50)
-                {
-                    return false;
-                }
                 Status existStatus = db.Set<Status>()
                     .FirstOrDefault(x => x.StatusName.Equals(status.StatusName));
                 if (existStatus != null)
@@ -78,7 +70,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

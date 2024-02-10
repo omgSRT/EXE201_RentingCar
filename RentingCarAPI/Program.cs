@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,21 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//add cloudinary
+#region Cloudinary
+CloudinaryDotNet.Account cloudinaryAccount = new CloudinaryDotNet.Account
+{
+    Cloud = builder.Configuration["Cloudinary:CloudName"],
+    ApiKey = builder.Configuration["Cloudinary:ApiKey"],
+    ApiSecret = builder.Configuration["Cloudinary:ApiSecret"],
+};
+Cloudinary cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary);
+#endregion
+
+builder.Services.CustomSwagger();
+
 
 // Add services to the container.
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -48,8 +64,9 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
         RoleClaimType = ClaimTypes.Role,
-        ValidAudience =builder.Configuration["JWT:ValidAudience"],
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey =  new SymmetricSecurityKey(Encoding
         .UTF8.GetBytes(builder.Configuration["JWT:Secret"]))

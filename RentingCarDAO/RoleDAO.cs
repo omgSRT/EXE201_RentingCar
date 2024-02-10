@@ -35,7 +35,7 @@ namespace RentingCarDAO
             {
                 return db.Set<Role>().ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -46,7 +46,7 @@ namespace RentingCarDAO
             {
                 return db.Set<Role>().Where(x => x.RoleId == id).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }
@@ -55,14 +55,6 @@ namespace RentingCarDAO
         {
             try
             {
-                if (role == null || role.RoleName.Trim().Equals(string.Empty))
-                {
-                    return false;
-                }
-                if (role.RoleName.Trim().Length > 50)
-                {
-                    return false;
-                }
                 Role existRole = db.Set<Role>()
                     .FirstOrDefault(x => x.RoleName.Equals(role.RoleName));
                 if (existRole != null)
@@ -78,7 +70,7 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

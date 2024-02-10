@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
 {
@@ -24,7 +25,9 @@ namespace BusinessObjects.Models
         public long RoleId { get; set; }
         public long StatusId { get; set; }
 
+        [JsonIgnore]
         public virtual Role? Role { get; set; } = null!;
+        [JsonIgnore]
         public virtual Status? Status { get; set; } = null!;
         public virtual ICollection<ImagesLicenseCard> ImagesLicenseCards { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
