@@ -83,9 +83,10 @@ namespace RentingCarDAO
                     db.SaveChanges();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Create Fail");
+                var innerException = e.InnerException;
+                throw new Exception(e.Message, innerException);
             }
 
 
