@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using RentingCarDAO.DTO;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
 using System;
@@ -49,7 +50,7 @@ namespace RentingCarServices.Service
                     {
                         Email = email,
                         UserName = username,
-                        Password = hashed,
+                        Password = hashed.Trim(),
                         RoleId = 1,
                         StatusId = 1,
 
@@ -78,12 +79,19 @@ namespace RentingCarServices.Service
 
         public Account GetAccountByEmail(string email)
         {
-            Account account = _accountRepository.GetAccountByEmail(email);
-            if (account != null)
+            try
             {
-                return account;
+                Account account = _accountRepository.GetAccountByEmail(email);
+                if (account != null)
+                {
+                    return account;
+                }
+                return null;
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
-            return null;
+            
         }
 
         public List<Account> GetAllAccounts()
@@ -128,6 +136,69 @@ namespace RentingCarServices.Service
             }
 
             return string.Empty;
+        }
+
+        public bool UpdateAccount(int id, NewProfile newProfile)
+        {
+            try
+            {
+                var existingAccount = _accountRepository.GetAccountById(id); 
+                if (existingAccount != null)
+                {
+                    existingAccount.UserName = newProfile.newUserName.Trim();
+                    existingAccount.Email = newProfile.Email.Trim();
+                    existingAccount.Address = newProfile.newAddress.Trim();
+                    existingAccount.Country = newProfile.newCountry.Trim();
+                    existingAccount.Phone = newProfile.newPhone.Trim();
+
+                    _accountRepository.UpdateAccount(existingAccount);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public Account GetAccountById(int id)
+        {
+            try
+            {
+                Account account = _accountRepository.GetAccountById(id);
+                if (account != null)
+                {
+                    return account;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public AccountProfileDTO GetAccountProfileById(int id)
+        {
+            try
+            {
+                AccountProfileDTO accountProfile = _accountRepository.GetAccountProfileById(id);
+                if (accountProfile != null)
+                {
+                    return accountProfile;
+                }
+                throw new Exception("Account not valid");
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
     }
 }

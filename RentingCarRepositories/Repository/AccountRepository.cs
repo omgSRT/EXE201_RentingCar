@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using RentingCarDAO;
+using RentingCarDAO.DTO;
 using RentingCarRepositories.RepositoryInterface;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,24 @@ namespace RentingCarRepositories.Repository
             return _accountDAO.GetAccountByEmail(email);
         }
 
+        public Account GetAccountById(int id)
+        {
+            return _accountDAO.GetAccountById(id);
+        }
+
+        public AccountProfileDTO GetAccountProfileById(int id)
+        {
+            return _accountDAO.GetAccountProfileById(id);
+        }
+
         public List<Account> GetAllAccounts()
         {
             return _accountDAO.GetAccounts();
+        }
+
+        public bool UpdateAccount(Account newAccount)
+        {
+            return _accountDAO.UpdateProfile(newAccount);
         }
     }
 }

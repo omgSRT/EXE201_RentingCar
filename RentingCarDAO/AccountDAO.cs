@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
+using RentingCarDAO.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,10 +42,50 @@ namespace RentingCarDAO
         {
             try
             {
-                return db.Accounts.Where(m => m.Email.Equals(email))
+                Account account = db.Accounts.Where(m => m.Email.Equals(email))
                     .Include("Role")
                     .Include("Status")
                     .FirstOrDefault();
+                return account;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+
+        public Account GetAccountById(int id)
+        {
+            try
+            {
+                return db.Accounts.Where(m => m.AccountId == id)
+                    .Include("Role")
+                    .Include("Status")
+                    .FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+
+        public AccountProfileDTO GetAccountProfileById(int id)
+        {
+            try
+            {
+                var account = db.Accounts.Where(m => m.AccountId == id)
+                    .Include("Role")
+                    .Include("Status")
+                    .Select(m => new AccountProfileDTO
+                    {                        
+                        UserName = m.UserName,
+                        Email = m.Email,
+                        Address = m.Address,
+                        Country = m.Country,
+                        Phone = m.Phone,
+                    })
+                    .FirstOrDefault();
+                return account;
             }
             catch (Exception)
             {
@@ -92,5 +133,18 @@ namespace RentingCarDAO
 
         }
 
+        public bool UpdateProfile (Account newAccount)
+        {
+            try
+            {
+                db.Update(newAccount);
+                db.SaveChanges();
+                return true;
+            }catch (Exception e)
+            {
+                throw new Exception ("Update fail");
+            }
+            
+        }
     }
 }

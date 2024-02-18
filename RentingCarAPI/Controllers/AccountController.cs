@@ -1,6 +1,7 @@
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RentingCarDAO.DTO;
 using RentingCarServices.ServiceInterface;
 
 namespace RentingCarAPI.Controllers
@@ -29,7 +30,7 @@ namespace RentingCarAPI.Controllers
             return BadRequest();
         }
 
-        [HttpPost("CreateAccount",Name = "Create Account")]
+        [HttpPost("CreateAccount",Name = "CreateAccount")]
         public IActionResult CreateAccount(string email, string username , string password, string confirmPassword)
         {
             try
@@ -43,14 +44,14 @@ namespace RentingCarAPI.Controllers
             
         }
 
-        [HttpGet("SearchByEmail",Name = "Search Account By Email")]
+        [HttpGet("SearchByEmail/{email}",Name = "Search Account By Email")]
         public Account GetAccountByEmail(string email)
         {        
             return _accountService.GetAccountByEmail(email);
         }
 
         [HttpGet("SearchAllAccount", Name = "Search All Account")]
-        /*[Authorize(Roles = "Admin")]*/
+        //[Authorize(Roles = "USER")]
         public List<Account> GetAllAccount()
         {
             
@@ -66,6 +67,30 @@ namespace RentingCarAPI.Controllers
                 return Ok(result);
             }
             return Unauthorized();
+        }
+
+        [HttpPost("UpdateProfile/{id}", Name = "Update Current User Profile")]
+        public IActionResult UpdateProfile(int id, NewProfile newProfile)
+        {
+            try
+            {
+                var result = _accountService.UpdateAccount(id, newProfile);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetAccountProfile/{id}", Name = "Get Current User Profile")]
+        public AccountProfileDTO ViewCurrentUserProfile(int id)
+        {           
+             return _accountService.GetAccountProfileById(id);                                                   
         }
     }
 }

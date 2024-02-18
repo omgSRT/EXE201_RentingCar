@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using RentingCarDAO.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,12 @@ namespace RentingCarServices.ServiceInterface
         public List<Account> GetAllAccounts();
 
         string SignIn(string email, string password);
+
+        public bool UpdateAccount(int id, NewProfile newProfile);
+
+        public Account GetAccountById(int id);
+
+        public AccountProfileDTO GetAccountProfileById(int id);
 
     }
 }
