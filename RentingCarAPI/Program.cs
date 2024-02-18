@@ -10,7 +10,6 @@ using RentingCarRepositories.Repository;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.Service;
 using RentingCarServices.ServiceInterface;
-using SchoolManagementAPI.Identity;
 using System.Security.Claims;
 using System.Text;
 

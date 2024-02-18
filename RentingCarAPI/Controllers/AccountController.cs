@@ -30,10 +30,17 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpPost("CreateAccount",Name = "Create Account")]
-        public IActionResult CreateAccount(string email, string username , string password, string phone)
+        public IActionResult CreateAccount(string email, string username , string password, string confirmPassword)
         {
-            _accountService.CreateAccount(email, username,  password, phone);
-            return Ok("Add Successfully");
+            try
+            {
+                _accountService.CreateAccount(email, username, password, confirmPassword);
+                return Ok("Add Successfully");
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpGet("SearchByEmail",Name = "Search Account By Email")]

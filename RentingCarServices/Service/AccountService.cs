@@ -27,35 +27,41 @@ namespace RentingCarServices.Service
             _accountRepository = accountRepository;
         }
 
-        public void CreateAccount(string email, string username, string password, string phone)
+        public void CreateAccount(string email, string username, string password, string confirmPassword)
         {
-            if (email != null && username != null && password != null && phone != null)
+            if (email != null && username != null && password != null && confirmPassword != null)
             {
+                if(confirmPassword.Equals(password)) {
+                    // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
+                    byte[] salt = new byte[128 / 8];
+                    using (var rngCsp = new RNGCryptoServiceProvider())
+                    {
+                        rngCsp.GetNonZeroBytes(salt);
+                    }
+                    // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: password,
+                        salt: salt,
+                        prf: KeyDerivationPrf.HMACSHA512,
+                        iterationCount: 100000,
+                        numBytesRequested: 512 / 8));
+                    Account account = new Account
+                    {
+                        Email = email,
+                        UserName = username,
+                        Password = hashed,
+                        RoleId = 1,
+                        StatusId = 1,
 
-                // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
-                byte[] salt = new byte[128 / 8];
-                using (var rngCsp = new RNGCryptoServiceProvider())
-                {
-                    rngCsp.GetNonZeroBytes(salt);
+                    };
+                    _accountRepository.CreateAccount(account);
                 }
-                // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: password,
-                    salt: salt,
-                    prf: KeyDerivationPrf.HMACSHA512,
-                    iterationCount: 100000,
-                    numBytesRequested: 512 / 8));
-                Account account = new Account
+                else
                 {
-                    Email = email,
-                    UserName = username,
-                    Password = hashed,
-                    Phone = phone,
-                    RoleId = 1,
-                    StatusId = 1,
+                    throw new InvalidOperationException("Password and Confirm Password does not match!");
+                }
 
-                };
-                _accountRepository.CreateAccount(account);
+                
             }
         }
 

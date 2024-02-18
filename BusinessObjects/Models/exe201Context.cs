@@ -25,15 +25,18 @@ namespace BusinessObjects.Models
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Status> Statuses { get; set; } = null!;
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
+        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
         public virtual DbSet<VehicleType> VehicleTypes { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer(GetConnectionString());
             }
         }
+
         private string GetConnectionString()
         {
             IConfiguration config = new ConfigurationBuilder()
@@ -44,6 +47,7 @@ namespace BusinessObjects.Models
 
             return strConn;
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>(entity =>
@@ -101,7 +105,7 @@ namespace BusinessObjects.Models
             modelBuilder.Entity<ImagesLicenseCard>(entity =>
             {
                 entity.HasKey(e => e.ImagesId)
-                    .HasName("PK__Images_L__FA2651F75FE4F83B");
+                    .HasName("PK__Images_L__FA2651F7A393A807");
 
                 entity.ToTable("Images_License_Card");
 
@@ -213,7 +217,7 @@ namespace BusinessObjects.Models
             modelBuilder.Entity<ReviewImage>(entity =>
             {
                 entity.HasKey(e => e.ImagesId)
-                    .HasName("PK__Review_I__FA2651F7793217A7");
+                    .HasName("PK__Review_I__FA2651F7D425BD54");
 
                 entity.ToTable("Review_Images");
 
@@ -324,6 +328,29 @@ namespace BusinessObjects.Models
                     .HasForeignKey(d => d.VehicleTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Vehicle_VehicleType");
+            });
+
+            modelBuilder.Entity<VehicleImage>(entity =>
+            {
+                entity.HasKey(e => e.ImagesId)
+                    .HasName("PK__Vehicle___FA2651F7BC8C2DB9");
+
+                entity.ToTable("Vehicle_Images");
+
+                entity.Property(e => e.ImagesId).HasColumnName("images_id");
+
+                entity.Property(e => e.ImagesLink)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("images_link")
+                    .IsFixedLength();
+
+                entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.VehicleImages)
+                    .HasForeignKey(d => d.VehicleId)
+                    .HasConstraintName("FK_Vehicle_Images");
             });
 
             modelBuilder.Entity<VehicleType>(entity =>

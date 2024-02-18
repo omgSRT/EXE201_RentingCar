@@ -8,6 +8,7 @@ namespace BusinessObjects.Models
         public Vehicle()
         {
             Reviews = new HashSet<Review>();
+            VehicleImages = new HashSet<VehicleImage>();
         }
 
         public long VehicleId { get; set; }
@@ -30,5 +31,6 @@ namespace BusinessObjects.Models
         public virtual Status Status { get; set; } = null!;
         public virtual VehicleType VehicleType { get; set; } = null!;
         public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<VehicleImage> VehicleImages { get; set; }
     }
 }
