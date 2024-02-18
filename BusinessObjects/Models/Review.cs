@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
@@ -12,10 +13,17 @@ namespace BusinessObjects.Models
         }
 
         public long ReviewId { get; set; }
+        [Required]
+        [Range(1, int.MaxValue)]
         public string? Description { get; set; }
+        [Required]
+        [Range(0, 5)]
         public int? Point { get; set; }
+        [Required]
         public long VehicleId { get; set; }
+        [Required]
         public long AccountId { get; set; }
+        [Required]
         public long StatusId { get; set; }
 
         [JsonIgnore]

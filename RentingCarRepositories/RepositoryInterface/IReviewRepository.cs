@@ -19,5 +19,6 @@ namespace RentingCarRepositories.RepositoryInterface
         bool AddReview(Review review);
         bool UpdateReview(Review review);
         bool RemoveReview(Review review);
+        int GetLastInsertedReviewId();
     }
 }

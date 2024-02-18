@@ -200,5 +200,12 @@ namespace RentingCarDAO
                 throw new Exception();
             }
         }
+        public int GetLastInsertedReviewId()
+        { 
+            int lastInsertedId = db.Database
+                .ExecuteSqlRaw("SELECT IDENT_CURRENT('[dbo].[Review]')");
+
+            return lastInsertedId;
+        }
     }
 }

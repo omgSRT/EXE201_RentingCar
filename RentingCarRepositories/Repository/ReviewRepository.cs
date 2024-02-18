@@ -27,6 +27,11 @@ namespace RentingCarRepositories.Repository
             return _reviewDAO.AddReviewImage(image);
         }
 
+        public int GetLastInsertedReviewId()
+        {
+            return _reviewDAO.GetLastInsertedReviewId();
+        }
+
         public Review? GetReviewById(long id)
         {
             return _reviewDAO.GetReviewById(id);

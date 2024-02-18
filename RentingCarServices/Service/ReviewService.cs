@@ -75,5 +75,10 @@ namespace RentingCarServices.Service
         {
             return _reviewRepository.RemoveReview(review);
         }
+
+        public int GetLastInsertedReviewId()
+        {
+            return _reviewRepository.GetLastInsertedReviewId();
+        }
     }
 }
