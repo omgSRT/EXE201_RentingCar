@@ -39,5 +39,41 @@ namespace RentingCarServices.Service
         {
             return _reviewRepository.AddReviewImage(image);
         }
+
+        public IEnumerable<Review> GetReviews(int page, int quantity)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+            if (quantity == 0 || quantity > int.MaxValue)
+            {
+                quantity = 10;
+            }
+            var reviewList = _reviewRepository.GetReviews()
+                .Skip((page - 1) * quantity)
+                .Take(quantity);
+            return reviewList;
+        }
+
+        public Review? GetReviewById(long id)
+        {
+            return _reviewRepository.GetReviewById(id);
+        }
+
+        public bool AddReview(Review review)
+        {
+            return _reviewRepository.AddReview(review);
+        }
+
+        public bool UpdateReview(Review review)
+        {
+            return _reviewRepository.UpdateReview(review);
+        }
+
+        public bool RemoveReview(Review review)
+        {
+            return _reviewRepository.RemoveReview(review);
+        }
     }
 }

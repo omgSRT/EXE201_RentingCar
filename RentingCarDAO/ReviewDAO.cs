@@ -116,5 +116,89 @@ namespace RentingCarDAO
                 throw new Exception();
             }
         }
+
+        public IEnumerable<Review> GetReviews()
+        {
+            try
+            {
+                return db.Set<Review>();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public Review? GetReviewById(long id)
+        {
+            try
+            {
+                return db.Set<Review>().Where(x => x.ReviewId == id).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool AddReview(Review review)
+        {
+            try
+            {
+                if (review == null)
+                {
+                    return false;
+                }
+                db.Add(review);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool UpdateReview(Review review)
+        {
+            try
+            {
+                if (review == null)
+                {
+                    return false;
+                }
+                var checkExist = db.Accounts.Find(review.ReviewId);
+                if (checkExist != null)
+                {
+                    db.Entry(checkExist).State = EntityState.Detached;
+                }
+                db.Update(review);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool RemoveReview(Review review)
+        {
+            try
+            {
+                if (review == null)
+                {
+                    return false;
+                }
+                var checkExist = db.Accounts.Find(review.ReviewId);
+                if (checkExist != null)
+                {
+                    db.Entry(checkExist).State = EntityState.Detached;
+                }
+                db.Remove(review);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
     }
 }

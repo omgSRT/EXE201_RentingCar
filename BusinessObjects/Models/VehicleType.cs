@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
 {
@@ -11,8 +13,11 @@ namespace BusinessObjects.Models
         }
 
         public long VehicleTypeId { get; set; }
+        [Required]
+        [MinLength(1), MaxLength(50)]
         public string? TypeName { get; set; }
 
-        public virtual ICollection<Vehicle> Vehicles { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Vehicle>? Vehicles { get; set; }
     }
 }

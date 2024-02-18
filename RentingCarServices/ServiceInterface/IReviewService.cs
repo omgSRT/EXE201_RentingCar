@@ -12,5 +12,10 @@ namespace RentingCarServices.ServiceInterface
     {
         bool AddReviewImage(ReviewImage image);
         IEnumerable<ReviewImage> GetReviewImages(int page, int quantity);
+        IEnumerable<Review> GetReviews(int page, int quantity);
+        Review? GetReviewById(long id);
+        bool AddReview(Review review);
+        bool UpdateReview(Review review);
+        bool RemoveReview(Review review);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
 {
@@ -17,9 +18,13 @@ namespace BusinessObjects.Models
         public long AccountId { get; set; }
         public long StatusId { get; set; }
 
-        public virtual Account Account { get; set; } = null!;
-        public virtual Status Status { get; set; } = null!;
-        public virtual Vehicle Vehicle { get; set; } = null!;
-        public virtual ICollection<ReviewImage> ReviewImages { get; set; }
+        [JsonIgnore]
+        public virtual Account? Account { get; set; } = null!;
+        [JsonIgnore]
+        public virtual Status? Status { get; set; } = null!;
+        [JsonIgnore]
+        public virtual Vehicle? Vehicle { get; set; } = null!;
+        [JsonIgnore]
+        public virtual ICollection<ReviewImage>? ReviewImages { get; set; }
     }
 }

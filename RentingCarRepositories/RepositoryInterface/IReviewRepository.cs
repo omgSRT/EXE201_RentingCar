@@ -14,5 +14,10 @@ namespace RentingCarRepositories.RepositoryInterface
         bool AddReviewImage(ReviewImage image);
         bool UpdateReviewImage(ReviewImage image);
         bool RemoveReviewImage(ReviewImage image);
+        IEnumerable<Review> GetReviews();
+        Review? GetReviewById(long id);
+        bool AddReview(Review review);
+        bool UpdateReview(Review review);
+        bool RemoveReview(Review review);
     }
 }
