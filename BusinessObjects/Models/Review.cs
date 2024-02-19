@@ -13,7 +13,6 @@ namespace BusinessObjects.Models
         }
 
         public long ReviewId { get; set; }
-        [Required]
         [Range(1, int.MaxValue)]
         public string? Description { get; set; }
         [Required]
@@ -24,7 +23,8 @@ namespace BusinessObjects.Models
         [Required]
         public long AccountId { get; set; }
         [Required]
-        public long StatusId { get; set; }
+        [Range(1, 2)]
+        public long? StatusId { get; set; }
 
         [JsonIgnore]
         public virtual Account? Account { get; set; } = null!;

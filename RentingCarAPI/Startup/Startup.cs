@@ -12,7 +12,7 @@ namespace RentingCarAPI.Startup
             services.AddDbContext<exe201Context>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignIn", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RentingCar", Version = "v1" });
 
                 var securityScheme = new OpenApiSecurityScheme
                 {
@@ -28,14 +28,11 @@ namespace RentingCarAPI.Startup
                         Id = "Bearer"
                     }
                 };
-
                 c.AddSecurityDefinition("Bearer", securityScheme);
-
                 var securityRequirement = new OpenApiSecurityRequirement
-    {
-        { securityScheme, new[] { "Bearer" } }
-    };
-
+                {
+                    { securityScheme, new[] { "Bearer" } }
+                };
                 c.AddSecurityRequirement(securityRequirement);
             });
             return services;

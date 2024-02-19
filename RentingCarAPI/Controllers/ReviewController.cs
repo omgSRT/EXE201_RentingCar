@@ -109,11 +109,11 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(List<Review>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
-        public IActionResult GetAllReviews([FromQuery] int page, [FromQuery] int quantity)
+        public IActionResult GetAllReviews([FromQuery] int page, [FromQuery] int quantity, [FromQuery] int? filterPoint)
         {
             try
             {
-                var reviewList = _reviewService.GetReviews(page, quantity);
+                var reviewList = _reviewService.GetReviews(page, quantity, filterPoint);
                 if (!reviewList.Any())
                 {
                     return NotFound(new ResponseVM
@@ -133,13 +133,12 @@ namespace RentingCarAPI.Controllers
             }
         }
         [HttpPost("CreateReview", Name = "Create New Review")]
-        [ProducesResponseType(typeof(ResponseVMWithEntity<Review>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<ReviewRequestVM>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
-        public IActionResult CreateReview(Review review, List<IFormFile> files)
+        public IActionResult CreateReview([FromForm] ReviewRequestVM reviewRequest)
         {
             try
             {
-                review.StatusId = 1;
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(new ResponseVM
@@ -149,7 +148,15 @@ namespace RentingCarAPI.Controllers
                     });
                 }
 
-                var checkReview = _reviewService.AddReview(review);
+                Review newReview = new Review { 
+                    Description = reviewRequest.Description,
+                    Point = reviewRequest.Point,
+                    AccountId = reviewRequest.AccountId,
+                    VehicleId = reviewRequest.VehicleId,
+                    StatusId = reviewRequest.StatusId,
+                };
+
+                var checkReview = _reviewService.AddReview(newReview);
                 if (!checkReview)
                 {
                     return BadRequest(new ResponseVM
@@ -158,26 +165,43 @@ namespace RentingCarAPI.Controllers
                         Errors = new string[] { "Invalid Data to Database", "Invalid Input" }
                     });
                 }
-                int insertedReviewId = _reviewService.GetLastInsertedReviewId();
+                long insertedReviewId = newReview.ReviewId;
 
-                if (files.Count <= 0)
+                if (reviewRequest.Files != null)
                 {
-                    return BadRequest(new ResponseVM
+                    foreach (var file in reviewRequest.Files)
                     {
-                        Message = $"Cannot Upload Image",
-                        Errors = new string[] { "File is null" }
-                    });
+                        if (file != null && file.Length != 0)
+                        {
+                            var stream = file.OpenReadStream();
+                            var uploadParams = new ImageUploadParams
+                            {
+                                File = new FileDescription(file.FileName, stream),
+                                Folder = "exe201/Review"
+                            };
+                            var uploadResult = _cloudinary.Upload(uploadParams);
+                            ReviewImage uploadImage = new ReviewImage
+                            {
+                                ImagesLink = uploadResult.Url.ToString(),
+                                ReviewId = insertedReviewId,
+                            };
+                            var check = _reviewService.AddReviewImage(uploadImage);
+                            if (!check)
+                            {
+                                return BadRequest(new ResponseVM
+                                {
+                                    Message = "Cannot Upload Images",
+                                    Errors = new string[] { "Error While Inserting Data" }
+                                });
+                            }
+                        }
+                    }
                 }
 
-                foreach(var file in files)
-                {
-                    UploadImage(file, insertedReviewId);
-                }
-
-                return Ok(new ResponseVMWithEntity<Review>
+                return Ok(new ResponseVMWithEntity<ReviewRequestVM>
                 {
                     Message = "Add Successfully",
-                    Entity = review,
+                    Entity = reviewRequest,
                 });
             }
             catch (Exception ex)
@@ -193,6 +217,7 @@ namespace RentingCarAPI.Controllers
         [HttpPut("DeleteReview/{id}", Name = "Delete A Review")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Review>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Review>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult DeleteReview([FromRoute] long id)
         {
@@ -212,14 +237,19 @@ namespace RentingCarAPI.Controllers
                 var check = _reviewService.UpdateReview(review);
                 if (!check)
                 {
-                    return BadRequest(new ResponseVM
+                    return BadRequest(new ResponseVMWithEntity<Review>
                     {
                         Message = "Cannot Delete Review",
-                        Errors = new string[] { "Error Handling Delete From Database" }
+                        Errors = new string[] { "Error Handling Delete From Database" },
+                        Entity = review
                     });
                 }
 
-                return Ok();
+                return Ok(new ResponseVMWithEntity<Review>
+                {
+                    Message = "Delete Successfully",
+                    Entity = review
+                });
             }
             catch(Exception ex)
             {
@@ -228,30 +258,6 @@ namespace RentingCarAPI.Controllers
                     Message = "Cannot Delete Review",
                     Errors = new string[] { ex.Message }
                 });
-            }
-        }
-
-        private void UploadImage(IFormFile file, int insertedReviewId)
-        {
-            if (file != null && file.Length != 0)
-            {
-                var stream = file.OpenReadStream();
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(file.FileName, stream),
-                    Folder = "exe201/Review"
-                };
-                var uploadResult = _cloudinary.Upload(uploadParams);
-                ReviewImage uploadImage = new ReviewImage
-                {
-                    ImagesLink = uploadResult.Url.ToString(),
-                    ReviewId = insertedReviewId,
-                };
-                var check = _reviewService.AddReviewImage(uploadImage);
-                if (!check)
-                {
-                    throw new Exception($"Cannot Upload Image {file.FileName}");
-                }
             }
         }
     }
