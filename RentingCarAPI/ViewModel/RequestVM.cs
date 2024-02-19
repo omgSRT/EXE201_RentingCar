@@ -15,7 +15,7 @@ namespace RentingCarAPI.ViewModel
         public long AccountId { get; set; }
         [Required]
         [Range(1, 2)]
-        public long? StatusId { get; set; }
+        public long StatusId { get; set; }
         public List<IFormFile>? Files { get; set; }
     }
     public class AccountRequestVM

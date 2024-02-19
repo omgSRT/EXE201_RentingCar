@@ -20,10 +20,10 @@ namespace BusinessObjects.Models
         public string? StatusName { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Account>? Accounts { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Review>? Reviews { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Vehicle>? Vehicles { get; set; }
+        public virtual ICollection<Vehicle> Vehicles { get; set; }
     }
 }

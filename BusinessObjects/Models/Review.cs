@@ -13,7 +13,7 @@ namespace BusinessObjects.Models
         }
 
         public long ReviewId { get; set; }
-        [Range(1, int.MaxValue)]
+        [MaxLength(int.MaxValue)]
         public string? Description { get; set; }
         [Required]
         [Range(0, 5)]
@@ -23,16 +23,15 @@ namespace BusinessObjects.Models
         [Required]
         public long AccountId { get; set; }
         [Required]
-        [Range(1, 2)]
-        public long? StatusId { get; set; }
+        public long StatusId { get; set; }
 
         [JsonIgnore]
-        public virtual Account? Account { get; set; } = null!;
+        public virtual Account Account { get; set; } = null!;
         [JsonIgnore]
-        public virtual Status? Status { get; set; } = null!;
+        public virtual Status Status { get; set; } = null!;
         [JsonIgnore]
-        public virtual Vehicle? Vehicle { get; set; } = null!;
+        public virtual Vehicle Vehicle { get; set; } = null!;
         [JsonIgnore]
-        public virtual ICollection<ReviewImage>? ReviewImages { get; set; }
+        public virtual ICollection<ReviewImage> ReviewImages { get; set; }
     }
 }
