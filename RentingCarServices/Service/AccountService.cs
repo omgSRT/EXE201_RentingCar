@@ -33,24 +33,24 @@ namespace RentingCarServices.Service
             if (email != null && username != null && password != null && confirmPassword != null)
             {
                 if(confirmPassword.Equals(password)) {
-                    // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
-                    byte[] salt = new byte[128 / 8];
-                    using (var rngCsp = new RNGCryptoServiceProvider())
-                    {
-                        rngCsp.GetNonZeroBytes(salt);
-                    }
-                    // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                        password: password,
-                        salt: salt,
-                        prf: KeyDerivationPrf.HMACSHA512,
-                        iterationCount: 100000,
-                        numBytesRequested: 512 / 8));
+                    //// generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
+                    //byte[] salt = new byte[128 / 8];
+                    //using (var rngCsp = new RNGCryptoServiceProvider())
+                    //{
+                    //    rngCsp.GetNonZeroBytes(salt);
+                    //}
+                    //// derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+                    //string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    //    password: password,
+                    //    salt: salt,
+                    //    prf: KeyDerivationPrf.HMACSHA512,
+                    //    iterationCount: 100000,
+                    //    numBytesRequested: 512 / 8));
                     Account account = new Account
                     {
-                        Email = email,
+                        Email = email.Trim(),
                         UserName = username,
-                        Password = hashed.Trim(),
+                        Password = password.Trim(),
                         RoleId = 1,
                         StatusId = 1,
 
@@ -137,6 +137,7 @@ namespace RentingCarServices.Service
 
             return string.Empty;
         }
+
 
         public bool UpdateAccount(int id, NewProfile newProfile)
         {
