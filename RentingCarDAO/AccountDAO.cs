@@ -144,7 +144,94 @@ namespace RentingCarDAO
             {
                 throw new Exception ("Update fail");
             }
-            
+        }
+
+        public IEnumerable<ImagesLicenseCard> GetImagesLicenseCard()
+        {
+            try
+            {
+                return db.Set<ImagesLicenseCard>();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public ImagesLicenseCard? GetLicenseImageById(long id)
+        {
+            try
+            {
+                return db.Set<ImagesLicenseCard>().Where(x => x.ImagesId == id).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool AddLicenseImage(ImagesLicenseCard image)
+        {
+            try
+            {
+                if (image == null)
+                {
+                    return false;
+                }
+                db.Add(image);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool UpdateLicenseImage(ImagesLicenseCard image)
+        {
+            try
+            {
+                if (image == null)
+                {
+                    return false;
+                }
+                if (image.ImagesLink?.Trim().Length == 0)
+                {
+                    return false;
+                }
+                var checkExist = db.ImagesLicenseCards.Find(image.ImagesId);
+                if (checkExist != null)
+                {
+                    db.Entry(checkExist).State = EntityState.Detached;
+                }
+                db.Update(image);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool RemoveLicenseImage(ImagesLicenseCard image)
+        {
+            try
+            {
+                if (image == null)
+                {
+                    return false;
+                }
+                var checkExist = db.ImagesLicenseCards.Find(image.ImagesId);
+                if (checkExist != null)
+                {
+                    db.Entry(checkExist).State = EntityState.Detached;
+                }
+                db.Remove(image);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
         }
     }
 }

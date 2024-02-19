@@ -60,9 +60,7 @@ namespace RentingCarServices.Service
                 else
                 {
                     throw new InvalidOperationException("Password and Confirm Password does not match!");
-                }
-
-                
+                }               
             }
         }
 
@@ -200,6 +198,31 @@ namespace RentingCarServices.Service
                 throw new Exception(ex.Message);
             }
             
+        }
+
+        public IEnumerable<ImagesLicenseCard> GetImagesLicenseCard()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ImagesLicenseCard? GetLicenseImageById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddLicenseImage(ImagesLicenseCard image)
+        {
+            return _accountRepository.AddLicenseImage(image);
+        }
+
+        public bool UpdateLicenseImage(ImagesLicenseCard image)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveLicenseImage(ImagesLicenseCard image)
+        {
+            throw new NotImplementedException();
         }
     }
 }

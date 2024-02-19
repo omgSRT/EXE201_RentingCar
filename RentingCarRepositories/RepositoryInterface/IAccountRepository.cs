@@ -23,6 +23,11 @@ namespace RentingCarRepositories.RepositoryInterface
         public List<Account> GetAllAccounts();
 
         public bool UpdateAccount(Account newAccount);
+        IEnumerable<ImagesLicenseCard> GetImagesLicenseCard();
+        ImagesLicenseCard? GetLicenseImageById(long id);
+        bool AddLicenseImage(ImagesLicenseCard image);
+        bool UpdateLicenseImage(ImagesLicenseCard image);
+        bool RemoveLicenseImage(ImagesLicenseCard image);
 
     }
 }

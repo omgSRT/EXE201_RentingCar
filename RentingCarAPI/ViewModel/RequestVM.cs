@@ -18,4 +18,15 @@ namespace RentingCarAPI.ViewModel
         public long? StatusId { get; set; }
         public List<IFormFile>? Files { get; set; }
     }
+    public class AccountRequestVM
+    {
+        public string UserName { get; set; } = null!;
+        [Required]
+        public string Email { get; set; } = null!;
+        public string? Address { get; set; }
+        public string? Country { get; set; }
+        public string? Phone { get; set; }
+        public IFormFile? LicenseImage { get; set; }
+        public IFormFile? IdentityImage { get; set; }
+    }
 }

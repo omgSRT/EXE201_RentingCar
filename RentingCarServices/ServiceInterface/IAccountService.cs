@@ -25,6 +25,11 @@ namespace RentingCarServices.ServiceInterface
         public Account GetAccountById(int id);
 
         public AccountProfileDTO GetAccountProfileById(int id);
+        IEnumerable<ImagesLicenseCard> GetImagesLicenseCard();
+        ImagesLicenseCard? GetLicenseImageById(long id);
+        bool AddLicenseImage(ImagesLicenseCard image);
+        bool UpdateLicenseImage(ImagesLicenseCard image);
+        bool RemoveLicenseImage(ImagesLicenseCard image);
 
     }
 }

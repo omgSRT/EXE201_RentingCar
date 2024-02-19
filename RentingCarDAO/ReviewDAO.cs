@@ -80,7 +80,7 @@ namespace RentingCarDAO
                 {
                     return false;
                 }
-                var checkExist = db.Accounts.Find(image.ImagesId);
+                var checkExist = db.ReviewImages.Find(image.ImagesId);
                 if (checkExist != null)
                 {
                     db.Entry(checkExist).State = EntityState.Detached;
@@ -102,7 +102,7 @@ namespace RentingCarDAO
                 {
                     return false;
                 }
-                var checkExist = db.Accounts.Find(image.ImagesId);
+                var checkExist = db.ReviewImages.Find(image.ImagesId);
                 if (checkExist != null)
                 {
                     db.Entry(checkExist).State = EntityState.Detached;
@@ -164,7 +164,7 @@ namespace RentingCarDAO
                 {
                     return false;
                 }
-                var checkExist = db.Accounts.Find(review.ReviewId);
+                var checkExist = db.Reviews.Find(review.ReviewId);
                 if (checkExist != null)
                 {
                     db.Entry(checkExist).State = EntityState.Detached;
@@ -186,7 +186,7 @@ namespace RentingCarDAO
                 {
                     return false;
                 }
-                var checkExist = db.Accounts.Find(review.ReviewId);
+                var checkExist = db.Reviews.Find(review.ReviewId);
                 if (checkExist != null)
                 {
                     db.Entry(checkExist).State = EntityState.Detached;
