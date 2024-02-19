@@ -17,7 +17,7 @@ namespace RentingCarAPI.Controllers
             _logger = logger;
             _vehicleTypeService = vehicleTypeService;
         }
-        [HttpGet("getall")]
+        [HttpGet("GetVehicleTypes", Name = "Get All Vehicle Type")]
         [ProducesResponseType(typeof(List<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetAll()
@@ -32,7 +32,7 @@ namespace RentingCarAPI.Controllers
             }
             return Ok(typeList);
         }
-        [HttpPost("create")]
+        [HttpPost("CreateVehicleType", Name = "Create A Vehicle Type")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status400BadRequest)]
@@ -65,7 +65,7 @@ namespace RentingCarAPI.Controllers
                 Entity = newVehicleType
             });
         }
-        [HttpPut("update/{id}")]
+        [HttpPut("UpdateVehicleType/{id}", Name = "Update A Vehicle Type")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status400BadRequest)]
@@ -100,7 +100,7 @@ namespace RentingCarAPI.Controllers
                 Entity = updateType
             });
         }
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("DeleteVehicleTypes/{id}", Name = "Delete A Vehicle Type")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status404NotFound)]

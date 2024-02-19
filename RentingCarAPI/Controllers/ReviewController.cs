@@ -23,14 +23,23 @@ namespace RentingCarAPI.Controllers
             _cloudinary = cloudinary;
         }
 
-        [HttpGet("images/get", Name = "Get All Review Images")]
+        [HttpGet("Images/GetImages", Name = "Get All Review Images")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(List<ReviewImage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetAllReviewImages([FromQuery] int page, [FromQuery] int quantity)
         {
             try
             {
                 var reviewImageList = _reviewService.GetReviewImages(page, quantity);
+                if (!reviewImageList.Any())
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Review Image List is Empty",
+                        Errors = new string[] {"There's No Data in Database"}
+                    });
+                }
                 return Ok(reviewImageList);
             }
             catch (Exception)
@@ -41,7 +50,7 @@ namespace RentingCarAPI.Controllers
                 });
             }
         }
-        [HttpPost("image/add", Name = "Upload Review Image")]
+        [HttpPost("Image/AddImages", Name = "Demo Upload Review Image")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<ReviewImage>), StatusCodes.Status200OK)]
         public IActionResult AddReviewImage(IFormFile file)
@@ -96,14 +105,23 @@ namespace RentingCarAPI.Controllers
                 });
             }
         }
-        [HttpGet("get", Name = "Get All Reviews")]
+        [HttpGet("GetReviews", Name = "Get All Reviews")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(List<Review>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetAllReviews([FromQuery] int page, [FromQuery] int quantity)
         {
             try
             {
                 var reviewList = _reviewService.GetReviews(page, quantity);
+                if (!reviewList.Any())
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Review List is Empty",
+                        Errors = new string[] { "There's No Data in Database" }
+                    });
+                }
                 return Ok(reviewList);
             }
             catch (Exception)
@@ -114,14 +132,14 @@ namespace RentingCarAPI.Controllers
                 });
             }
         }
-        [HttpPost("create", Name = "Create New Review")]
-        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status200OK)]
+        [HttpPost("CreateReview", Name = "Create New Review")]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Review>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
-        public IActionResult CreateReview(Review review,
-            IFormFile file1, IFormFile file2, IFormFile file3)
+        public IActionResult CreateReview(Review review, List<IFormFile> files)
         {
             try
             {
+                review.StatusId = 1;
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(new ResponseVM
@@ -131,19 +149,6 @@ namespace RentingCarAPI.Controllers
                     });
                 }
 
-                // Check if any property in the review object is null
-                var properties = review.GetType().GetProperties();
-                foreach (var property in properties)
-                {
-                    if (property.GetValue(review) == null)
-                    {
-                        return BadRequest(new ResponseVM
-                        {
-                            Message = "Cannot Create Review",
-                            Errors = new string[] { "One or more properties in the review object are null" }
-                        });
-                    }
-                }
                 var checkReview = _reviewService.AddReview(review);
                 if (!checkReview)
                 {
@@ -155,9 +160,7 @@ namespace RentingCarAPI.Controllers
                 }
                 int insertedReviewId = _reviewService.GetLastInsertedReviewId();
 
-                if ((file1 == null || file1.Length <= 0)
-                    && (file2 == null || file2.Length <= 0)
-                    && (file3 == null || file3.Length <= 0))
+                if (files.Count <= 0)
                 {
                     return BadRequest(new ResponseVM
                     {
@@ -166,11 +169,16 @@ namespace RentingCarAPI.Controllers
                     });
                 }
 
-                UploadImage(file1, insertedReviewId);
-                UploadImage(file2, insertedReviewId);
-                UploadImage(file3, insertedReviewId);
+                foreach(var file in files)
+                {
+                    UploadImage(file, insertedReviewId);
+                }
 
-                return Ok();
+                return Ok(new ResponseVMWithEntity<Review>
+                {
+                    Message = "Add Successfully",
+                    Entity = review,
+                });
             }
             catch (Exception ex)
             {
@@ -181,8 +189,49 @@ namespace RentingCarAPI.Controllers
                 });
             }
         }
+        
+        [HttpPut("DeleteReview/{id}", Name = "Delete A Review")]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Review>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        public IActionResult DeleteReview([FromRoute] long id)
+        {
+            try
+            {
+                var review = _reviewService.GetReviewById(id);
+                if (review == null)
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "There's No Review With ID " +id,
+                        Errors = new string[] {"No Review Data With ID " +id}
+                    });
+                }
+                review.StatusId = 2;
 
-        public void UploadImage(IFormFile file, int insertedReviewId)
+                var check = _reviewService.UpdateReview(review);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVM
+                    {
+                        Message = "Cannot Delete Review",
+                        Errors = new string[] { "Error Handling Delete From Database" }
+                    });
+                }
+
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Delete Review",
+                    Errors = new string[] { ex.Message }
+                });
+            }
+        }
+
+        private void UploadImage(IFormFile file, int insertedReviewId)
         {
             if (file != null && file.Length != 0)
             {
