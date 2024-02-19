@@ -18,7 +18,7 @@ namespace RentingCarAPI.Controllers
             _logger = logger;
             _roleService = roleService;
         }
-        [HttpGet("getall")]
+        [HttpGet("GetRoles", Name = "Get All Roles")]
         [ProducesResponseType(typeof(List<Role>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetStatuses()
@@ -34,7 +34,7 @@ namespace RentingCarAPI.Controllers
             }
             return Ok(list);
         }
-        [HttpPut("updateRole/{id}")]
+        [HttpPut("UpdateRole/{id}", Name = "Update A Role")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Role>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Role>), StatusCodes.Status400BadRequest)]
@@ -70,13 +70,13 @@ namespace RentingCarAPI.Controllers
             });
         }
 
-        [HttpGet("checkRole")]
+        /*[HttpGet("CheckRole")]
         public IActionResult Example()
         {
             var roles = User.FindFirst(ClaimTypes.Role)?.Value;
             _logger.LogInformation($"User roles: {roles}");
 
             return Ok("Example");
-        }
+        }*/
     }
 }

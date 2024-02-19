@@ -18,7 +18,7 @@ namespace RentingCarAPI.Controllers
             _logger = logger;
             _statusService = statusService;
         }
-        [HttpGet("getStatuses")]
+        [HttpGet("GetStatus", Name = "Get All Status")]
         [ProducesResponseType(typeof(List<Status>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public ActionResult<List<Status>> GetStatuses()
@@ -34,7 +34,7 @@ namespace RentingCarAPI.Controllers
             }
             return Ok(list);
         }
-        [HttpPut("updateStatus/{id}")]
+        [HttpPut("UpdateStatus/{id}", Name = "Update A Status")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Status>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Status>), StatusCodes.Status400BadRequest)]
