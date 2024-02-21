@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using RentingCarDAO.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,6 @@ namespace RentingCarServices.ServiceInterface
 {
     public interface IVehicleService
     {
+        public List<VehicleDTO> GetAllVehicles();
     }
 }

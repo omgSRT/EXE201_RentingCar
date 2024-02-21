@@ -33,11 +33,14 @@ namespace RentingCarDAO
         {
             try
             {
-                return db.Set<Vehicle>();
+                return db.Set<Vehicle>()
+                    .Include(v=> v.VehicleType)
+                    .Include(v=> v.VehicleImages)
+                    .ToList();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception();
+                throw new Exception(e.Message);
             }
         }
         public Vehicle? GetVehicleById(long id)
