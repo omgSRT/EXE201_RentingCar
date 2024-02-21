@@ -41,6 +41,9 @@ namespace BusinessObjects.Models
         [MaxLength(50)]
         public string LicensePlate { get; set; } = null!;
         [Required]
+        public string ModelType { get; set; } = null!;
+        [Required]
+        public string Location { get; set; } = null!;
         public long StatusId { get; set; }
         [JsonIgnore]
         public long? ReservationId { get; set; }
