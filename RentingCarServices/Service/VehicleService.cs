@@ -53,5 +53,11 @@ namespace RentingCarServices.Service
             }
             
         }
+
+        public Vehicle? GetVehicleById(long id)
+        {
+            return _vehicleRepository.GetVehicleById(id);
+
+        }
     }
 }

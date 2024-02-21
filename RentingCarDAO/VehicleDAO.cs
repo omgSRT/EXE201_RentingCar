@@ -47,7 +47,10 @@ namespace RentingCarDAO
         {
             try
             {
-                return db.Set<Vehicle>().FirstOrDefault(x => x.VehicleId == id);
+                return db.Set<Vehicle>()
+                    .Include(v => v.VehicleType)
+                    .Include(v => v.VehicleImages)
+                    .FirstOrDefault(x => x.VehicleId == id);
             }
             catch (Exception)
             {

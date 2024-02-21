@@ -11,5 +11,6 @@ namespace RentingCarServices.ServiceInterface
     public interface IVehicleService
     {
         public List<VehicleDTO> GetAllVehicles();
+        public Vehicle? GetVehicleById(long id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObjects.Models;
+using Microsoft.AspNetCore.Mvc;
 using RentingCarAPI.ViewModel;
 using RentingCarDAO.DTO;
 using RentingCarServices.Service;
@@ -34,6 +35,21 @@ namespace RentingCarAPI.Controllers
                 });
             }
             return Ok(vehicleList);
+        }
+
+        [HttpGet("GetVehicleById/{id}", Name = "Get Vehicle By Id")]
+        public IActionResult GetVehicleById(long id)
+        {
+            Vehicle vehicle = _vehicleService.GetVehicleById(id);
+            if (vehicle == null)
+            {
+                return NotFound(new ResponseVM
+                {
+                    Message = "Not Found This Vehicle",
+                    Errors = new string[] { "Find Fail" }
+                });
+            }
+            return Ok(vehicle);
         }
     }
 }

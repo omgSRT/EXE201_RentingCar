@@ -55,11 +55,11 @@ namespace BusinessObjects.Models
         public virtual Reservation? Reservation { get; set; }
         [JsonIgnore]
         public virtual Status? Status { get; set; } = null!;
-        [JsonIgnore]
+        
         public virtual VehicleType? VehicleType { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<Review>? Reviews { get; set; }
-        [JsonIgnore]
+        
         public virtual ICollection<VehicleImage>? VehicleImages { get; set; }
     }
 }
