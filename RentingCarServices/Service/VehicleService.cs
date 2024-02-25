@@ -64,19 +64,52 @@ namespace RentingCarServices.Service
 
         public bool AddVehicle(Vehicle vehicle)
         {
-            try
-            {
-                return _vehicleRepository.AddVehicle(vehicle);             
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            return _vehicleRepository.AddVehicle(vehicle);             
         }
 
         public bool AddVehicleImage(VehicleImage image)
         {
             return _vehicleRepository.AddVehicleImage(image);
+        }
+
+        public bool UpdateVehicle(Vehicle vehicle)
+        {
+            return _vehicleRepository.UpdateVehicle(vehicle);
+        }
+
+        public bool RemoveVehicle(Vehicle vehicle)
+        {
+            return _vehicleRepository.RemoveVehicle(vehicle);
+        }
+
+        public bool UpdateVehicleImage(VehicleImage image)
+        {
+            return _vehicleRepository.UpdateVehicleImage(image);
+        }
+
+        public bool RemoveVehicleImage(VehicleImage image)
+        {
+            return _vehicleRepository.RemoveVehicleImage(image);
+        }
+
+        public List<VehicleImage> GetVehicleImages()
+        {
+            return _vehicleRepository.GetVehicleImages().ToList();
+        }
+
+        public List<Vehicle> GetVehicles()
+        {
+            return _vehicleRepository.GetVehicles().ToList();
+        }
+
+        public bool DeleteVehicle(Vehicle vehicle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteVehicleImage(VehicleImage image)
+        {
+            throw new NotImplementedException();
         }
     }
 }

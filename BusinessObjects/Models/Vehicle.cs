@@ -32,10 +32,10 @@ namespace BusinessObjects.Models
         [Range(1, int.MaxValue)]
         public int Amount { get; set; }
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(10, double.MaxValue)]
         public double Deposit { get; set; }
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(10, double.MaxValue)]
         public double Price { get; set; }
         [Required]
         [MaxLength(50)]

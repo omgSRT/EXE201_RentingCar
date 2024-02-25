@@ -7,6 +7,9 @@ using RentingCarDAO.DTO;
 using RentingCarServices.Service;
 using RentingCarServices.ServiceInterface;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Net.WebSockets;
+using RentingCarDAO;
 
 namespace RentingCarAPI.Controllers
 {
@@ -26,6 +29,8 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpGet("SearchAllVehicle", Name = "Search All Vehicle")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<Vehicle>), StatusCodes.Status200OK)]
         //[Authorize(Roles = "USER")]
         public IActionResult GetAllAccount()
         {
@@ -43,9 +48,11 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpGet("GetVehicleById/{id}", Name = "Get Vehicle By Id")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Vehicle), StatusCodes.Status200OK)]
         public IActionResult GetVehicleById(long id)
         {
-            Vehicle vehicle = _vehicleService.GetVehicleById(id);
+            Vehicle? vehicle = _vehicleService.GetVehicleById(id);
             if (vehicle == null)
             {
                 return NotFound(new ResponseVM
@@ -60,7 +67,7 @@ namespace RentingCarAPI.Controllers
         [HttpPost("CreateNewVehicle", Name = "Add New Vehicle")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
-        public IActionResult AddVehicle([FromForm] ViewModel.VehicleDTO vehicleDTO)
+        public IActionResult AddVehicle([FromForm] ViewModel.VehicleAddRequestVM vehicleDTO)
         {
             try
             {
@@ -68,8 +75,8 @@ namespace RentingCarAPI.Controllers
                 {
                     return BadRequest(new ResponseVM
                     {
-                        Message = "Email Is Required",
-                        Errors = new string[] { "Email Is Required" }
+                        Message = "Invalid Data",
+                        Errors = new string[] { "Invalid Data To Model" }
                     });
                 }
                 var newVehicle = new Vehicle
@@ -135,7 +142,7 @@ namespace RentingCarAPI.Controllers
                 }
                 return BadRequest(new ResponseVM
                 {
-                    Message = "Cannot Add Vehicle With ID " +newVehicle.VehicleId,
+                    Message = "Cannot Create Vehicle",
                     Errors = new string[] {"Error While Inserting Data"}
                 });
             }
@@ -143,22 +150,280 @@ namespace RentingCarAPI.Controllers
             {
                 return BadRequest(new ResponseVM
                 {
-                    Message = "Cannot Create Account",
+                    Message = "Cannot Create Vehicle",
                     Errors = new string[] { "Invalid Input", ex.Message }
                 });
             }
 
         }
-        [HttpPost("CreateNewVehicle", Name = "Add New Vehicle")]
+
+        [HttpPut("UpdateVehicle/{id}", Name = "Update Existed Vehicle")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
-        public IActionResult UpdateVehicle([FromForm] ViewModel.VehicleDTO vehicleDTO)
+        public IActionResult UpdateVehicle([FromRoute] long id, 
+            [FromForm] ViewModel.VehicleUpdateRequestVM requestVehicle)
         {
             try
             {
-                return Ok();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ResponseVM
+                    {
+                        Message = "Invalid Data",
+                        Errors = new string[] { "Invalid Data To Model" }
+                    });
+                }
+                var updateVehicle = _vehicleService.GetVehicleById(id);
+                if (updateVehicle == null)
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot Found Vehicle With ID " +id,
+                        Errors = new string[] {"There's No Vehicle Data With ID " +id}
+                    });
+                }
+
+                //update existed vehicle
+                updateVehicle.VehicleName = requestVehicle.VehicleName ?? "Random Car Name";
+                updateVehicle.Passengers = requestVehicle.Passengers <= 0 ? 1 : requestVehicle.Passengers;
+                updateVehicle.Suitcase = requestVehicle.Suitcase ?? "AutoPack";
+                updateVehicle.Doors = requestVehicle.Doors < 0 ? 0 : requestVehicle.Doors;
+                updateVehicle.Engine = requestVehicle.Engine ?? "Internal Combustion";
+                updateVehicle.Fueltype = requestVehicle.Fueltype ?? "Gasoline";
+                updateVehicle.Options = requestVehicle.Options ?? "Options";
+                updateVehicle.Amount = requestVehicle.Amount <= 0 ? 1 : requestVehicle.Amount;
+                updateVehicle.Deposit = requestVehicle.Deposit <= 0 ? 10 : requestVehicle.Deposit;
+                updateVehicle.Price = requestVehicle.Price <= 0 ? 10 : requestVehicle.Price;
+                updateVehicle.LicensePlate = requestVehicle.LicensePlate ?? "ABC123";
+                updateVehicle.ModelType = requestVehicle.ModelType ?? "AUTO";
+                updateVehicle.Location = requestVehicle.Location ?? "TPHCM";
+                updateVehicle.VehicleTypeId = requestVehicle.VehicleTypeId <= 0 ? 1 : requestVehicle.VehicleTypeId;
+
+                var check = _vehicleService.UpdateVehicle(updateVehicle);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVMWithEntity<Vehicle>
+                    {
+                        Message = "Cannot Update Vehicle",
+                        Errors = new string[] {"Invalid Data To Database"},
+                        Entity = updateVehicle
+                    });
+                }
+
+                return Ok(new ResponseVMWithEntity<Vehicle>
+                {
+                    Message = "Update Successfully",
+                    Entity = updateVehicle
+                });
             }
             catch(Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Update Account",
+                    Errors = new string[] { "Invalid Input", ex.Message }
+                });
+            }
+        }
+
+        [HttpPut("DeleteVehicle/{id}", Name = "Delete A Vehicle")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
+        public IActionResult DeleteVehicle([FromRoute] long id)
+        {
+            try
+            {
+                var deleteVehicle = _vehicleService.GetVehicleById(id);
+                if (deleteVehicle == null)
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot Found Vehicle To Remove",
+                        Errors = new string[] { "There's No Vehicle Data With ID " + id }
+                    });
+                }
+
+                deleteVehicle.StatusId = 2;
+                var check = _vehicleService.UpdateVehicle(deleteVehicle);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVMWithEntity<Vehicle>
+                    {
+                        Message = "Cannot Remove Vehicle",
+                        Errors = new string[] { "Invalid Data To Database" },
+                        Entity = deleteVehicle
+                    });
+                }
+
+                return Ok(new ResponseVMWithEntity<Vehicle>
+                {
+                    Message = "Remove Successfully",
+                    Entity = deleteVehicle
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Remove Account",
+                    Errors = new string[] { "Invalid Input", ex.Message }
+                });
+            }
+        }
+
+        [HttpPost("VehicleImage/Add/{vehicleId}", Name = "Add Vehicle Images to Existing Vehicle")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<IFormFile>), StatusCodes.Status200OK)]
+        public IActionResult AddMoreImages([FromRoute] long vehicleId, List<IFormFile> imageList)
+        {
+            try
+            {
+                var foundVehicle = _vehicleService.GetVehicleById(vehicleId);
+                if (foundVehicle == null)
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot Found Vehicle",
+                        Errors = new string[] { "There's No Vehicle Data With ID " + vehicleId }
+                    });
+                }
+
+                var id = foundVehicle.VehicleId;
+                if (imageList != null)
+                {
+                    foreach (var file in imageList)
+                    {
+                        if (file != null && file.Length != 0)
+                        {
+                            var stream = file.OpenReadStream();
+                            var uploadParams = new ImageUploadParams
+                            {
+                                File = new FileDescription(file.FileName, stream),
+                                Folder = "exe201/Vehicle"
+                            };
+                            var uploadResult = _cloudinary.Upload(uploadParams);
+                            VehicleImage uploadImage = new VehicleImage
+                            {
+                                ImagesLink = uploadResult.Url.ToString(),
+                                VehicleId = id,
+                            };
+                            var check = _vehicleService.AddVehicleImage(uploadImage);
+                            if (!check)
+                            {
+                                return BadRequest(new ResponseVM
+                                {
+                                    Message = "Cannot Upload Images",
+                                    Errors = new string[] { "Error While Inserting Data" }
+                                });
+                            }
+                        }
+                    }
+                }
+
+                return Ok(imageList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Update Account",
+                    Errors = new string[] { "Invalid Input", ex.Message }
+                });
+            }
+        }
+
+        [HttpPost("VehicleImage/Replace/{vehicleId}", Name = "Add Vehicle Images to Existing Vehicle")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<IFormFile>), StatusCodes.Status200OK)]
+        public IActionResult ReplaceImages([FromRoute] long vehicleId, List<IFormFile> imageList)
+        {
+            try
+            {
+                var foundVehicle = _vehicleService.GetVehicleById(vehicleId);
+                if (foundVehicle == null)
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot Found Vehicle",
+                        Errors = new string[] { "There's No Vehicle Data With ID " + vehicleId }
+                    });
+                }
+
+                var existImages = _vehicleService.GetVehicleImages().Where(x => x.VehicleId == vehicleId);
+                var failedDeletions = new List<VehicleImage>();
+                if (existImages.Any())
+                {
+                    var backupImages = existImages;
+                    foreach (var image in existImages)
+                    {
+                        var checkDeleteImage = _vehicleService.DeleteVehicleImage(image);
+                        if (!checkDeleteImage)
+                        {
+                            failedDeletions.Add(image);
+                        }
+                    }
+
+                    if(failedDeletions.Any())
+                    {
+                        foreach(var image in failedDeletions)
+                        {
+                            var check = _vehicleService.AddVehicleImage(image);
+                            if (!check)
+                            {
+                                return BadRequest(new ResponseVM
+                                {
+                                    Message = "Cannot Upload Images",
+                                    Errors = new string[] { "Error While Inserting Data" }
+                                });
+                            }
+                        }
+                        return BadRequest(new ResponseVM
+                        {
+                            Message = "Cannot Delete Some Images. Images Has Been Restored",
+                            Errors = failedDeletions.Select(x => $"Error While Deleting Image with ID: {x.ImagesId}").ToArray()
+                        });
+                    }
+                }
+
+                var id = foundVehicle.VehicleId;
+                if (imageList != null)
+                {
+                    foreach (var file in imageList)
+                    {
+                        if (file != null && file.Length != 0)
+                        {
+                            var stream = file.OpenReadStream();
+                            var uploadParams = new ImageUploadParams
+                            {
+                                File = new FileDescription(file.FileName, stream),
+                                Folder = "exe201/Vehicle"
+                            };
+                            var uploadResult = _cloudinary.Upload(uploadParams);
+                            VehicleImage uploadImage = new VehicleImage
+                            {
+                                ImagesLink = uploadResult.Url.ToString(),
+                                VehicleId = id,
+                            };
+                            var check = _vehicleService.AddVehicleImage(uploadImage);
+                            if (!check)
+                            {
+                                return BadRequest(new ResponseVM
+                                {
+                                    Message = "Cannot Upload Images",
+                                    Errors = new string[] { "Error While Inserting Data" }
+                                });
+                            }
+                        }
+                    }
+                }
+
+                return Ok(imageList);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
