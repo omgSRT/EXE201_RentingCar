@@ -12,5 +12,7 @@ namespace RentingCarServices.ServiceInterface
     {
         public List<VehicleDTO> GetAllVehicles();
         public Vehicle? GetVehicleById(long id);
+        public bool AddVehicle(Vehicle vehicle);
+        bool AddVehicleImage(VehicleImage image);
     }
 }

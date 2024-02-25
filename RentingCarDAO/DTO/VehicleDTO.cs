@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,6 +17,6 @@ namespace RentingCarDAO.DTO
         public double Price { get; set; }
         public string ModelType { get; set; } = null!;
         public string? TypeName { get; set; }
-        public string? ImagesLink { get; set; }
+        public string? VehicleImage { get; set; }
     }
 }

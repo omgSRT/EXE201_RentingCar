@@ -1,6 +1,8 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.Extensions.Configuration;
+using RentingCarDAO;
 using RentingCarDAO.DTO;
+using RentingCarRepositories.Repository;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
 using System;
@@ -42,7 +44,7 @@ namespace RentingCarServices.Service
                         Passengers = v.Passengers,
                         ModelType = v.ModelType,
                         TypeName = v.VehicleType?.TypeName,
-                        ImagesLink = v.VehicleImages?.FirstOrDefault()?.ToString(),
+                        VehicleImage = v.VehicleImages?.FirstOrDefault()?.ToString(),
                     }).Where(dto => dto != null).ToList();
                     return vehicleDTOs;
                 }
@@ -58,6 +60,23 @@ namespace RentingCarServices.Service
         {
             return _vehicleRepository.GetVehicleById(id);
 
+        }
+
+        public bool AddVehicle(Vehicle vehicle)
+        {
+            try
+            {
+                return _vehicleRepository.AddVehicle(vehicle);             
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public bool AddVehicleImage(VehicleImage image)
+        {
+            return _vehicleRepository.AddVehicleImage(image);
         }
     }
 }

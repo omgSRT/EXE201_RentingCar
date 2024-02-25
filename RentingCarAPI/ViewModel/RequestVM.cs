@@ -29,4 +29,24 @@ namespace RentingCarAPI.ViewModel
         public IFormFile? LicenseImage { get; set; }
         public IFormFile? IdentityImage { get; set; }
     }
+
+    public class VehicleDTO
+    {
+        [Required]
+        public string VehicleName { get; set; } = null!;
+        [Required]
+        [Range(0, 100)]
+        public int Passengers { get; set; }
+        [Required]
+        public string Fueltype { get; set; } = null!;
+        [Required]
+        [Range(0, 10000000)]
+        public double Price { get; set; }
+        [Required]
+        public string ModelType { get; set; } = null!;
+        [Required]
+        public string? TypeName { get; set; }
+        [Required]
+        public List<IFormFile>? VehicleImage { get; set; }
+    }
 }
