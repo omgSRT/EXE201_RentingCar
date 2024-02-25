@@ -58,6 +58,8 @@ namespace RentingCarAPI.Controllers
         }
 
         [HttpPost("CreateNewVehicle", Name = "Add New Vehicle")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
         public IActionResult AddVehicle([FromForm] ViewModel.VehicleDTO vehicleDTO)
         {
             try
@@ -72,25 +74,30 @@ namespace RentingCarAPI.Controllers
                 }
                 var newVehicle = new Vehicle
                 {
-                    Amount = 1,
+                    Amount = vehicleDTO.Amount <= 0 ? 1 : vehicleDTO.Amount,
                     VehicleName = vehicleDTO.VehicleName,
                     Passengers = vehicleDTO.Passengers,
+                    Suitcase = vehicleDTO.Suitcase,
+                    Doors = vehicleDTO.Doors,
+                    Engine = vehicleDTO.Engine,
                     Fueltype = vehicleDTO.Fueltype,
+                    Options = vehicleDTO.Options,
+                    Deposit = vehicleDTO.Deposit,
                     Price = vehicleDTO.Price,
                     ModelType = vehicleDTO.ModelType,
-                    VehicleType = new VehicleType
-                    {
-                        TypeName = vehicleDTO.TypeName
-                    },
+                    Location = vehicleDTO.Location,
+                    LicensePlate = vehicleDTO.LicensePlate,
+                    StatusId = 1,
+                    VehicleTypeId = vehicleDTO.VehicleTypeId,
                 };
                 bool checkSuccess = _vehicleService.AddVehicle(newVehicle);
                 
                 long insertedImagesId = newVehicle.VehicleId;
 
                 //upload identity and driver license images
-                if (vehicleDTO.VehicleImage != null)
+                if (vehicleDTO.VehicleImages != null)
                 {
-                    foreach (var file in vehicleDTO.VehicleImage)
+                    foreach (var file in vehicleDTO.VehicleImages)
                     {
                         if (file != null && file.Length != 0)
                         {
@@ -118,13 +125,19 @@ namespace RentingCarAPI.Controllers
                         }
                     }
                 }
-                if (true)
+                if (checkSuccess)
                 {
-                    return Ok(new ResponseVM
+                    return Ok(new ResponseVMWithEntity<Vehicle>
                     {
-                        Message = "Create Successfully"
+                        Message = "Create Successfully",
+                        Entity = newVehicle,
                     });
                 }
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Add Vehicle With ID " +newVehicle.VehicleId,
+                    Errors = new string[] {"Error While Inserting Data"}
+                });
             }
             catch (Exception ex)
             {
@@ -135,6 +148,24 @@ namespace RentingCarAPI.Controllers
                 });
             }
 
+        }
+        [HttpPost("CreateNewVehicle", Name = "Add New Vehicle")]
+        [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
+        public IActionResult UpdateVehicle([FromForm] ViewModel.VehicleDTO vehicleDTO)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Update Account",
+                    Errors = new string[] { "Invalid Input", ex.Message }
+                });
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace BusinessObjects.Models
         [Required]
         public string Options { get; set; } = null!;
         [Required]
-        [Range(100000, int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int Amount { get; set; }
         [Required]
         [Range(0, double.MaxValue)]

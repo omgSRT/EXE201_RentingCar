@@ -35,18 +35,36 @@ namespace RentingCarAPI.ViewModel
         [Required]
         public string VehicleName { get; set; } = null!;
         [Required]
-        [Range(0, 100)]
+        [Range(2, 60)]
         public int Passengers { get; set; }
+        public string Suitcase { get; set; } = null!;
+        [Range(0, 10)]
+        public int Doors { get; set; }
+        [Required]
+        public string Engine { get; set; } = null!;
         [Required]
         public string Fueltype { get; set; } = null!;
         [Required]
-        [Range(0, 10000000)]
+        public string Options { get; set; } = null!;
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int Amount { get; set; }
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double Deposit { get; set; }
+        [Required]
+        [Range(0, double.MaxValue)]
         public double Price { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string LicensePlate { get; set; } = null!;
         [Required]
         public string ModelType { get; set; } = null!;
         [Required]
-        public string? TypeName { get; set; }
+        public string Location { get; set; } = null!;
         [Required]
-        public List<IFormFile>? VehicleImage { get; set; }
+        public long VehicleTypeId { get; set; }
+        [Required]
+        public List<IFormFile> VehicleImages { get; set; }
     }
 }
