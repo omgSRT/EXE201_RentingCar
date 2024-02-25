@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
@@ -57,11 +55,11 @@ namespace BusinessObjects.Models
         public virtual Reservation? Reservation { get; set; }
         [JsonIgnore]
         public virtual Status? Status { get; set; } = null!;
-        
+
         public virtual VehicleType? VehicleType { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<Review>? Reviews { get; set; }
-        
+
         public virtual ICollection<VehicleImage>? VehicleImages { get; set; }
     }
 }

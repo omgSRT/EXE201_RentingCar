@@ -1,12 +1,6 @@
 ﻿using BusinessObjects.Models;
-using Microsoft.AspNetCore.Http;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarServices.Service
 {
@@ -21,11 +15,11 @@ namespace RentingCarServices.Service
 
         public IEnumerable<ReviewImage> GetReviewImages(int page, int quantity)
         {
-            if(page <= 0)
+            if (page <= 0)
             {
                 page = 1;
             }
-            if(quantity <= 0 || quantity > int.MaxValue)
+            if (quantity <= 0 || quantity > int.MaxValue)
             {
                 quantity = 10;
             }
@@ -51,7 +45,7 @@ namespace RentingCarServices.Service
             {
                 quantity = 10;
             }
-            if(filterPoint != null)
+            if (filterPoint != null)
             {
                 reviewList = _reviewRepository.GetReviews()
                     .Where(review => review.StatusId == 1)

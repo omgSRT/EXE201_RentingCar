@@ -1,15 +1,9 @@
 ﻿using BusinessObjects.Models;
-using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using RentingCarAPI.ViewModel;
-using RentingCarDAO.DTO;
-using RentingCarServices.Service;
 using RentingCarServices.ServiceInterface;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Net.WebSockets;
-using RentingCarDAO;
 
 namespace RentingCarAPI.Controllers
 {
@@ -99,7 +93,7 @@ namespace RentingCarAPI.Controllers
                     VehicleTypeId = vehicleDTO.VehicleTypeId,
                 };
                 bool checkSuccess = _vehicleService.AddVehicle(newVehicle);
-                
+
                 long insertedImagesId = newVehicle.VehicleId;
 
                 //upload identity and driver license images
@@ -144,7 +138,7 @@ namespace RentingCarAPI.Controllers
                 return BadRequest(new ResponseVMWithEntity<Vehicle>
                 {
                     Message = "Cannot Create Vehicle",
-                    Errors = new string[] {"Error While Inserting Data"},
+                    Errors = new string[] { "Error While Inserting Data" },
                     Entity = newVehicle,
                 });
             }
@@ -164,7 +158,7 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
-        public IActionResult UpdateVehicle([FromRoute] long id, 
+        public IActionResult UpdateVehicle([FromRoute] long id,
             [FromForm] ViewModel.VehicleUpdateRequestVM requestVehicle)
         {
             try
@@ -182,25 +176,25 @@ namespace RentingCarAPI.Controllers
                 {
                     return NotFound(new ResponseVM
                     {
-                        Message = "Cannot Found Vehicle With ID " +id,
-                        Errors = new string[] {"There's No Vehicle Data With ID " +id}
+                        Message = "Cannot Found Vehicle With ID " + id,
+                        Errors = new string[] { "There's No Vehicle Data With ID " + id }
                     });
                 }
 
                 //update existed vehicle
-                updateVehicle.VehicleName = requestVehicle.VehicleName ?? "Random Car Name";
-                updateVehicle.Passengers = requestVehicle.Passengers <= 0 ? 1 : requestVehicle.Passengers;
-                updateVehicle.Suitcase = requestVehicle.Suitcase ?? "AutoPack";
-                updateVehicle.Doors = requestVehicle.Doors < 0 ? 0 : requestVehicle.Doors;
-                updateVehicle.Engine = requestVehicle.Engine ?? "Internal Combustion";
-                updateVehicle.Fueltype = requestVehicle.Fueltype ?? "Gasoline";
-                updateVehicle.Options = requestVehicle.Options ?? "Options";
-                updateVehicle.Amount = requestVehicle.Amount <= 0 ? 1 : requestVehicle.Amount;
-                updateVehicle.Deposit = requestVehicle.Deposit <= 0 ? 10 : requestVehicle.Deposit;
-                updateVehicle.Price = requestVehicle.Price <= 0 ? 10 : requestVehicle.Price;
-                updateVehicle.LicensePlate = requestVehicle.LicensePlate ?? "ABC123";
-                updateVehicle.ModelType = requestVehicle.ModelType ?? "AUTO";
-                updateVehicle.Location = requestVehicle.Location ?? "TPHCM";
+                updateVehicle.VehicleName = requestVehicle.VehicleName ?? updateVehicle.VehicleName;
+                updateVehicle.Passengers = requestVehicle.Passengers <= 0 ? updateVehicle.Passengers : requestVehicle.Passengers;
+                updateVehicle.Suitcase = requestVehicle.Suitcase ?? updateVehicle.Suitcase;
+                updateVehicle.Doors = requestVehicle.Doors < 0 ? updateVehicle.Doors : requestVehicle.Doors;
+                updateVehicle.Engine = requestVehicle.Engine ?? updateVehicle.Engine;
+                updateVehicle.Fueltype = requestVehicle.Fueltype ?? updateVehicle.Fueltype;
+                updateVehicle.Options = requestVehicle.Options ?? updateVehicle.Options;
+                updateVehicle.Amount = requestVehicle.Amount <= 0 ? updateVehicle.Amount : requestVehicle.Amount;
+                updateVehicle.Deposit = requestVehicle.Deposit <= 0 ? updateVehicle.Deposit : requestVehicle.Deposit;
+                updateVehicle.Price = requestVehicle.Price <= 0 ? updateVehicle.Price : requestVehicle.Price;
+                updateVehicle.LicensePlate = requestVehicle.LicensePlate ?? updateVehicle.LicensePlate;
+                updateVehicle.ModelType = requestVehicle.ModelType ?? updateVehicle.ModelType;
+                updateVehicle.Location = requestVehicle.Location ?? updateVehicle.Location;
                 updateVehicle.VehicleTypeId = requestVehicle.VehicleTypeId <= 0 ? 1 : requestVehicle.VehicleTypeId;
 
                 var check = _vehicleService.UpdateVehicle(updateVehicle);
@@ -209,7 +203,7 @@ namespace RentingCarAPI.Controllers
                     return BadRequest(new ResponseVMWithEntity<Vehicle>
                     {
                         Message = "Cannot Update Vehicle",
-                        Errors = new string[] {"Invalid Data To Database"},
+                        Errors = new string[] { "Invalid Data To Database" },
                         Entity = updateVehicle
                     });
                 }
@@ -220,7 +214,7 @@ namespace RentingCarAPI.Controllers
                     Entity = updateVehicle
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
@@ -267,7 +261,7 @@ namespace RentingCarAPI.Controllers
                     Entity = deleteVehicle
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
@@ -369,9 +363,9 @@ namespace RentingCarAPI.Controllers
                         }
                     }
 
-                    if(failedDeletions.Any())
+                    if (failedDeletions.Any())
                     {
-                        foreach(var image in failedDeletions)
+                        foreach (var image in failedDeletions)
                         {
                             var check = _vehicleService.AddVehicleImage(image);
                             if (!check)

@@ -1,8 +1,7 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
-using RentingCarServices.ServiceInterface;
 using RentingCarAPI.ViewModel;
-using System.Security.Claims;
+using RentingCarServices.ServiceInterface;
 
 namespace RentingCarAPI.Controllers
 {
@@ -54,7 +53,7 @@ namespace RentingCarAPI.Controllers
         {
             try
             {
-                if(name == null)
+                if (name == null)
                 {
                     return BadRequest(new ResponseVM
                     {
@@ -114,7 +113,7 @@ namespace RentingCarAPI.Controllers
                     return BadRequest(new ResponseVM
                     {
                         Message = "Cannot Update Role",
-                        Errors = new string[] { "No Data Found With ID " +id }
+                        Errors = new string[] { "No Data Found With ID " + id }
                     });
                 }
                 bool check = _roleService.Update(role);

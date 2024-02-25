@@ -1,10 +1,6 @@
-﻿using BusinessObjects.Models;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using RentingCarAPI.Startup;
 using RentingCarRepositories.Repository;
 using RentingCarRepositories.RepositoryInterface;
@@ -68,7 +64,7 @@ builder.Services.AddAuthentication(options =>
         RoleClaimType = ClaimTypes.Role,
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey =  new SymmetricSecurityKey(Encoding
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding
         .UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
     };
 });
@@ -88,7 +84,7 @@ app.UseSwaggerUI(c =>
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    
+
 }
 
 app.UseAuthentication();

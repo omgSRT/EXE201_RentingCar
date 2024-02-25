@@ -1,10 +1,5 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarDAO
 {
@@ -34,8 +29,8 @@ namespace RentingCarDAO
             try
             {
                 return db.Set<Vehicle>()
-                    .Include(v=> v.VehicleType)
-                    .Include(v=> v.VehicleImages)
+                    .Include(v => v.VehicleType)
+                    .Include(v => v.VehicleImages)
                     .ToList();
             }
             catch (Exception e)

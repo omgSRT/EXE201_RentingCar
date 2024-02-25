@@ -1,19 +1,12 @@
 ﻿using BusinessObjects.Models;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RentingCarDAO.DTO;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarServices.Service
 {
@@ -32,7 +25,8 @@ namespace RentingCarServices.Service
         {
             if (email != null && username != null && password != null && confirmPassword != null)
             {
-                if(confirmPassword.Equals(password)) {
+                if (confirmPassword.Equals(password))
+                {
                     //// generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
                     //byte[] salt = new byte[128 / 8];
                     //using (var rngCsp = new RNGCryptoServiceProvider())
@@ -60,7 +54,7 @@ namespace RentingCarServices.Service
                 else
                 {
                     throw new InvalidOperationException("Password and Confirm Password does not match!");
-                }               
+                }
             }
         }
 
@@ -85,11 +79,12 @@ namespace RentingCarServices.Service
                     return account;
                 }
                 return null;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
 
         public List<Account> GetAllAccounts()
@@ -141,7 +136,7 @@ namespace RentingCarServices.Service
         {
             try
             {
-                var existingAccount = _accountRepository.GetAccountById(id); 
+                var existingAccount = _accountRepository.GetAccountById(id);
                 if (existingAccount != null)
                 {
                     existingAccount.UserName = newProfile.newUserName.Trim();
@@ -157,9 +152,9 @@ namespace RentingCarServices.Service
                 {
                     return false;
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -193,11 +188,12 @@ namespace RentingCarServices.Service
                     return accountProfile;
                 }
                 throw new Exception("Account not valid");
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
 
         public IEnumerable<ImagesLicenseCard> GetImagesLicenseCard()

@@ -35,11 +35,12 @@ namespace RentingCarAPI.Controllers
                 }
                 return Ok(typeList);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(new ResponseVM
                 {
                     Message = "Cannot Find Vehicle Type List",
-                    Errors = new string[] { "No Data in Database"}
+                    Errors = new string[] { "No Data in Database" }
                 });
             }
         }
@@ -91,7 +92,7 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status400BadRequest)]
-        public ActionResult<VehicleType> Update([FromRoute] long id,string name)
+        public ActionResult<VehicleType> Update([FromRoute] long id, string name)
         {
             try
             {
@@ -137,7 +138,8 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status404NotFound)]
-        public IActionResult Delete([FromRoute] long id) {
+        public IActionResult Delete([FromRoute] long id)
+        {
             try
             {
                 VehicleType delType = _vehicleTypeService.GetVehicleTypeById(id);
