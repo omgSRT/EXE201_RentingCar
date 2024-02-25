@@ -66,6 +66,7 @@ namespace RentingCarAPI.Controllers
 
         [HttpPost("CreateNewVehicle", Name = "Add New Vehicle")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Vehicle>), StatusCodes.Status200OK)]
         public IActionResult AddVehicle([FromForm] ViewModel.VehicleAddRequestVM vehicleDTO)
         {
@@ -140,10 +141,11 @@ namespace RentingCarAPI.Controllers
                         Entity = newVehicle,
                     });
                 }
-                return BadRequest(new ResponseVM
+                return BadRequest(new ResponseVMWithEntity<Vehicle>
                 {
                     Message = "Cannot Create Vehicle",
-                    Errors = new string[] {"Error While Inserting Data"}
+                    Errors = new string[] {"Error While Inserting Data"},
+                    Entity = newVehicle,
                 });
             }
             catch (Exception ex)

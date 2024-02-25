@@ -23,16 +23,27 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public ActionResult<List<Status>> GetStatuses()
         {
-            var list = _statusService.GetStatuses();
-            if(!list.Any())
+            try
             {
-                return NotFound(new ResponseVM
+                var list = _statusService.GetStatuses();
+                if (!list.Any())
                 {
-                    Message = "There's no data",
-                    Errors = new string[] {"There's no data in database"}
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot Find Role List",
+                        Errors = new string[] { "No Data in Database" }
+                    });
+                }
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Find Status List",
+                    Errors = new string[] { "Error While Getting Data", ex.Message }
                 });
             }
-            return Ok(list);
         }
         [HttpPut("UpdateStatus/{id}", Name = "Update A Status")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Status>), StatusCodes.Status200OK)]
@@ -40,34 +51,53 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVMWithEntity<Status>), StatusCodes.Status400BadRequest)]
         public IActionResult Update([FromRoute] long id, string name)
         {
-            if(!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ResponseVM
+                    {
+                        Message = "Invalid Input",
+                        Errors = new string[] { "Name is null", "Name doesn't have 50 characters" }
+                    });
+                }
+                var status = _statusService.GetStatusById(id);
+                if (status != null)
+                {
+                    status.StatusName = name;
+                }
+                else
+                {
+                    return BadRequest(new ResponseVM
+                    {
+                        Message = "Cannot Update Status",
+                        Errors = new string[] { "No Status Data With ID " +id }
+                    });
+                }
+                bool check = _statusService.Update(status);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVMWithEntity<Status>
+                    {
+                        Message = "Cannot Update Status",
+                        Entity = status,
+                        Errors = new string[] { "Invalid Data to Database", "Cannot Update or Save to Database" }
+                    });
+                }
+                return Ok(new ResponseVMWithEntity<Status>
+                {
+                    Message = "Update Successfully",
+                    Entity = status
+                });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
-                    Message = "Invalid Input",
-                    Errors = new string[] { "Name is null", "Name doesn't have 50 characters" }
+                    Message = "Cannot Update Status",
+                    Errors = new string[] { "Invalid Input", ex.Message }
                 });
             }
-            var status = _statusService.GetStatusById(id);
-            if (status != null)
-            {
-                status.StatusName = name;
-            }
-            bool check = _statusService.Update(status);
-            if (!check)
-            {
-                return BadRequest(new ResponseVMWithEntity<Status>
-                {
-                    Message = "Server Error. Cannot Update",
-                    Entity = status,
-                    Errors = new string[] {"Invalid Data to Database", "Cannot Update or Save to Database" }
-                });
-            }
-            return Ok(new ResponseVMWithEntity<Status>
-            {
-                Message = "Update Successfully",
-                Entity = status
-            });
         }
     }
 }

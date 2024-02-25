@@ -18,6 +18,11 @@ namespace RentingCarServices.Service
             _roleRepository = roleRepository;
         }
 
+        public bool Add(Role role)
+        {
+            return _roleRepository.Add(role);
+        }
+
         public Role? GetRoleById(long id)
         {
             return _roleRepository.GetRoleById(id);

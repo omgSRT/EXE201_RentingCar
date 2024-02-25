@@ -18,6 +18,6 @@ namespace BusinessObjects.Models
         public string? RoleName { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Account> Accounts { get; set; }
+        public virtual ICollection<Account>? Accounts { get; set; }
     }
 }

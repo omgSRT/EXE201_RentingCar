@@ -51,6 +51,30 @@ namespace RentingCarDAO
                 throw new Exception();
             }
         }
+        public bool Add(Role role)
+        {
+            try
+            {
+                Role existRole = db.Set<Role>()
+                    .FirstOrDefault(x => x.RoleName.Equals(role.RoleName));
+                if (existRole != null)
+                {
+                    return false;
+                }
+                var checkExist = db.Accounts.Find(role.RoleId);
+                if (checkExist != null)
+                {
+                    db.Entry(checkExist).State = EntityState.Detached;
+                }
+                db.Add(role);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
         public bool Update(Role role)
         {
             try

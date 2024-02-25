@@ -11,6 +11,7 @@ namespace RentingCarServices.ServiceInterface
     {
         List<Role> GetRoles();
         Role? GetRoleById(long id);
+        bool Add(Role role);
         bool Update(Role role);
     }
 }

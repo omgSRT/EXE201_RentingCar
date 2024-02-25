@@ -16,6 +16,12 @@ namespace RentingCarRepositories.Repository
         {
             _roleDAO = new RoleDAO();
         }
+
+        public bool Add(Role role)
+        {
+            return _roleDAO.Add(role);
+        }
+
         public Role? GetRoleById(long id)
         {
             return _roleDAO.GetRoleById(id);
