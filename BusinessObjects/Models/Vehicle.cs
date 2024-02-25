@@ -19,7 +19,9 @@ namespace BusinessObjects.Models
         [Required]
         [Range(2, 60)]
         public int Passengers { get; set; }
+        [Required]
         public string Suitcase { get; set; } = null!;
+        [Required]
         [Range(0, 10)]
         public int Doors { get; set; }
         [Required]
