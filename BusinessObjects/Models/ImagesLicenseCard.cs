@@ -13,6 +13,6 @@ namespace BusinessObjects.Models
         public string ImagesType { get; set; } = null!;
         public long AccountId { get; set; }
 
-        public virtual Account Account { get; set; } = null!;
+        public virtual Account? Account { get; set; } = null!;
     }
 }
