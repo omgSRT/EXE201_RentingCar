@@ -22,15 +22,27 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetAll()
         {
-            List<VehicleType> typeList = _vehicleTypeService.GetVehicleTypes();
-            if (!typeList.Any())
+            try
             {
-                return NotFound(new ResponseVM { 
-                    Message = "There's No Vehicle List",
-                    Errors = new string[] {"Vehicle Type List is Empty"}
+                List<VehicleType> typeList = _vehicleTypeService.GetVehicleTypes();
+                if (!typeList.Any())
+                {
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot Find Vehicle Type List",
+                        Errors = new string[] { "No Data in Database" }
+                    });
+                }
+                return Ok(typeList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseVM
+                {
+                    Message = "Cannot Find Vehicle Type List",
+                    Errors = new string[] { "No Data in Database" }
                 });
             }
-            return Ok(typeList);
         }
         [HttpPost("CreateVehicleType", Name = "Create A Vehicle Type")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
@@ -38,97 +50,131 @@ namespace RentingCarAPI.Controllers
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status400BadRequest)]
         public IActionResult Create(string name)
         {
-            if(!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ResponseVM
+                    {
+                        Message = "Name Must Not Be Empty",
+                        Errors = new string[] { "Name is null" }
+                    });
+                }
+                VehicleType newVehicleType = new VehicleType();
+                newVehicleType.TypeName = name;
+                bool check = _vehicleTypeService.Add(newVehicleType);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVMWithEntity<VehicleType>
+                    {
+                        Message = "Cannot Create Vehicle Type",
+                        Entity = newVehicleType,
+                        Errors = new string[] { "Invalid Data to Database", "Cannot Save or Update to Database" }
+                    });
+                }
+
+                return Ok(new ResponseVMWithEntity<VehicleType>
+                {
+                    Message = "Create Successfully",
+                    Entity = newVehicleType
+                });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
-                    Message = "Invalid Input",
-                    Errors = new string[] {"Name is null", "Name must have at least 50 characters"}
+                    Message = "Cannot Create Vehicle Type",
+                    Errors = new string[] { "Invalid Input", ex.Message }
                 });
             }
-            VehicleType newVehicleType = new VehicleType();
-            newVehicleType.TypeName = name;
-            bool check = _vehicleTypeService.Add(newVehicleType);
-            if(!check)
-            {
-                return BadRequest(new ResponseVMWithEntity<VehicleType>
-                {
-                    Message = "Invalid Input",
-                    Entity = newVehicleType,
-                    Errors = new string[] {"Invalid Data to Database", "Cannot Save or Update to Database"}
-                });
-            }
-
-            return Ok(new ResponseVMWithEntity<VehicleType>
-            {
-                Message = "Create Successfully",
-                Entity = newVehicleType
-            });
         }
         [HttpPut("UpdateVehicleType/{id}", Name = "Update A Vehicle Type")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status400BadRequest)]
-        public ActionResult<VehicleType> Update([FromRoute] long id,string name)
+        public ActionResult<VehicleType> Update([FromRoute] long id, string name)
         {
-            if (!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ResponseVM
+                    {
+                        Message = "Name Must Not Be Empty",
+                        Errors = new string[] { "Name is null", "Name must have at least 50 characters" }
+                    });
+                }
+                VehicleType updateType = _vehicleTypeService.GetVehicleTypeById(id);
+                if (updateType != null)
+                {
+                    updateType.TypeName = name;
+                }
+                bool check = _vehicleTypeService.Update(updateType);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVMWithEntity<VehicleType>
+                    {
+                        Message = "Cannot Update Vehicle Type",
+                        Entity = updateType,
+                        Errors = new string[] { "Invalid Data to Database", "Cannot Save or Update to Database" }
+                    });
+                }
+                return Ok(new ResponseVMWithEntity<VehicleType>
+                {
+                    Message = "Update Successfully",
+                    Entity = updateType
+                });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
-                    Message = "Invalid Data",
-                    Errors = new string[] { "Name is null", "Name must have at least 50 characters" }
+                    Message = "Cannot Update Vehicle Type",
+                    Errors = new string[] { "Invalid Input", ex.Message }
                 });
             }
-            VehicleType updateType = _vehicleTypeService.GetVehicleTypeById(id);
-            if (updateType != null)
-            {
-                updateType.TypeName = name;
-            }
-            bool check = _vehicleTypeService.Update(updateType);
-            if(!check)
-            {
-                return BadRequest(new ResponseVMWithEntity<VehicleType>
-                {
-                    Message = "Invalid Input",
-                    Entity = updateType,
-                    Errors = new string[] {"Invalid Data to Database", "Cannot Save or Update to Database" }
-                });
-            }
-            return Ok(new ResponseVMWithEntity<VehicleType>
-            {
-                Message = "Update Successfully",
-                Entity = updateType
-            });
         }
         [HttpDelete("DeleteVehicleTypes/{id}", Name = "Delete A Vehicle Type")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseVMWithEntity<VehicleType>), StatusCodes.Status404NotFound)]
-        public IActionResult Delete([FromRoute] long id) {
-            VehicleType delType = _vehicleTypeService.GetVehicleTypeById(id);
-            if (delType == null)
+        public IActionResult Delete([FromRoute] long id)
+        {
+            try
             {
-                return NotFound(new ResponseVM
+                VehicleType delType = _vehicleTypeService.GetVehicleTypeById(id);
+                if (delType == null)
                 {
-                    Message = "Cannot find type with id" +id,
-                    Errors = new string[] {"There's no data in database with id" +id}
+                    return NotFound(new ResponseVM
+                    {
+                        Message = "Cannot find type with id" + id,
+                        Errors = new string[] { "There's no data in database with id" + id }
+                    });
+                }
+                bool check = _vehicleTypeService.Delete(delType);
+                if (!check)
+                {
+                    return BadRequest(new ResponseVMWithEntity<VehicleType>
+                    {
+                        Message = "Cannot Remove Vehicle Type",
+                        Entity = delType,
+                        Errors = new string[] { "Cannot Save or Update to Database", "Invalid Data to Database" }
+                    });
+                }
+                return Ok(new ResponseVMWithEntity<VehicleType>
+                {
+                    Message = "Remove Successfully",
+                    Entity = delType
                 });
             }
-            bool check = _vehicleTypeService.Delete(delType);
-            if (!check)
+            catch (Exception ex)
             {
-                return BadRequest(new ResponseVMWithEntity<VehicleType>
+                return BadRequest(new ResponseVM
                 {
-                    Message = "Invalid Data",
-                    Entity = delType,
-                    Errors = new string[] {"Cannot Save or Update to Database", "Invalid Data to Database"}
+                    Message = "Cannot Remove Vehicle Type",
+                    Errors = new string[] { "Invalid Input", ex.Message }
                 });
             }
-            return Ok(new ResponseVMWithEntity<VehicleType>
-            {
-                Message = "Delete Successfully",
-                Entity = delType
-            });
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using BusinessObjects.Models;
 using RentingCarDAO;
 using RentingCarRepositories.RepositoryInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarRepositories.Repository
 {
@@ -16,6 +11,12 @@ namespace RentingCarRepositories.Repository
         {
             _roleDAO = new RoleDAO();
         }
+
+        public bool Add(Role role)
+        {
+            return _roleDAO.Add(role);
+        }
+
         public Role? GetRoleById(long id)
         {
             return _roleDAO.GetRoleById(id);

@@ -1,10 +1,5 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarDAO
 {
@@ -34,8 +29,8 @@ namespace RentingCarDAO
             try
             {
                 return db.Set<Vehicle>()
-                    .Include(v=> v.VehicleType)
-                    .Include(v=> v.VehicleImages)
+                    .Include(v => v.VehicleType)
+                    .Include(v => v.VehicleImages)
                     .ToList();
             }
             catch (Exception e)
@@ -52,9 +47,9 @@ namespace RentingCarDAO
                     .Include(v => v.VehicleImages)
                     .FirstOrDefault(x => x.VehicleId == id);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception();
+                throw new Exception(e.Message);
             }
         }
         public bool AddVehicle(Vehicle vehicle)
@@ -69,9 +64,9 @@ namespace RentingCarDAO
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception();
+                throw new Exception(e.Message);
             }
         }
         public bool UpdateVehicle(Vehicle vehicle)

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models
@@ -19,7 +17,9 @@ namespace BusinessObjects.Models
         [Required]
         [Range(2, 60)]
         public int Passengers { get; set; }
+        [Required]
         public string Suitcase { get; set; } = null!;
+        [Required]
         [Range(0, 10)]
         public int Doors { get; set; }
         [Required]
@@ -29,13 +29,13 @@ namespace BusinessObjects.Models
         [Required]
         public string Options { get; set; } = null!;
         [Required]
-        [Range(100000, int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int Amount { get; set; }
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(10, double.MaxValue)]
         public double Deposit { get; set; }
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(10, double.MaxValue)]
         public double Price { get; set; }
         [Required]
         [MaxLength(50)]
@@ -55,11 +55,11 @@ namespace BusinessObjects.Models
         public virtual Reservation? Reservation { get; set; }
         [JsonIgnore]
         public virtual Status? Status { get; set; } = null!;
-        
+
         public virtual VehicleType? VehicleType { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<Review>? Reviews { get; set; }
-        
+
         public virtual ICollection<VehicleImage>? VehicleImages { get; set; }
     }
 }

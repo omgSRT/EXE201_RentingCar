@@ -37,7 +37,7 @@ namespace RentingCarAPI.Controllers
                     return NotFound(new ResponseVM
                     {
                         Message = "Review Image List is Empty",
-                        Errors = new string[] {"There's No Data in Database"}
+                        Errors = new string[] { "There's No Data in Database" }
                     });
                 }
                 return Ok(reviewImageList);
@@ -148,7 +148,8 @@ namespace RentingCarAPI.Controllers
                     });
                 }
 
-                Review newReview = new Review { 
+                Review newReview = new Review
+                {
                     Description = reviewRequest.Description,
                     Point = reviewRequest.Point,
                     AccountId = reviewRequest.AccountId,
@@ -213,7 +214,7 @@ namespace RentingCarAPI.Controllers
                 });
             }
         }
-        
+
         [HttpPut("DeleteReview/{id}", Name = "Delete A Review")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<Review>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
@@ -228,8 +229,8 @@ namespace RentingCarAPI.Controllers
                 {
                     return NotFound(new ResponseVM
                     {
-                        Message = "There's No Review With ID " +id,
-                        Errors = new string[] {"No Review Data With ID " +id}
+                        Message = "There's No Review With ID " + id,
+                        Errors = new string[] { "No Review Data With ID " + id }
                     });
                 }
                 review.StatusId = 2;
@@ -251,7 +252,7 @@ namespace RentingCarAPI.Controllers
                     Entity = review
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {

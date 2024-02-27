@@ -1,11 +1,9 @@
 using BusinessObjects.Models;
-using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
-using Microsoft.AspNetCore.Authorization;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using RentingCarAPI.ViewModel;
 using RentingCarDAO.DTO;
-using RentingCarServices.Service;
 using RentingCarServices.ServiceInterface;
 
 namespace RentingCarAPI.Controllers
@@ -25,7 +23,7 @@ namespace RentingCarAPI.Controllers
             _cloudinary = cloudinary;
         }
 
-        [HttpDelete("DeleteAccount",Name = "Delete Account")]
+        [HttpDelete("DeleteAccount", Name = "Delete Account")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         public IActionResult Delete(string email)
@@ -40,15 +38,15 @@ namespace RentingCarAPI.Controllers
             }
             return BadRequest(new ResponseVM
             {
-                Message = "Cannot Delete Account With Email " +email,
-                Errors = new string[] {"Error While Deleting Account"}
+                Message = "Cannot Delete Account With Email " + email,
+                Errors = new string[] { "Error While Deleting Account" }
             });
         }
 
-        [HttpPost("CreateAccount",Name = "CreateAccount")]
+        [HttpPost("CreateAccount", Name = "CreateAccount")]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
-        public IActionResult CreateAccount(string email, string username , string password, string confirmPassword)
+        public IActionResult CreateAccount(string email, string username, string password, string confirmPassword)
         {
             try
             {
@@ -57,7 +55,8 @@ namespace RentingCarAPI.Controllers
                 {
                     Message = "Create Successfully"
                 });
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseVM
                 {
@@ -65,21 +64,21 @@ namespace RentingCarAPI.Controllers
                     Errors = new string[] { "Invalid Input", ex.Message }
                 });
             }
-            
+
         }
 
-        [HttpGet("SearchByEmail/{email}",Name = "Search Account By Email")]
+        [HttpGet("SearchByEmail/{email}", Name = "Search Account By Email")]
         [ProducesResponseType(typeof(ResponseVMWithEntity<BusinessObjects.Models.Account>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status404NotFound)]
         public IActionResult GetAccountByEmail(string email)
         {
             var account = _accountService.GetAccountByEmail(email);
-            if(account == null)
+            if (account == null)
             {
                 return NotFound(new ResponseVM
                 {
                     Message = "There's No Data With Email" + email,
-                    Errors = new string[] {"No Data Match With Email" +email}
+                    Errors = new string[] { "No Data Match With Email" + email }
                 });
             }
             return Ok(new ResponseVMWithEntity<BusinessObjects.Models.Account>
@@ -104,23 +103,23 @@ namespace RentingCarAPI.Controllers
                     Errors = new string[] { "There's No Data" }
                 });
             }
-            return Ok(accountList); 
+            return Ok(accountList);
         }
 
-        [HttpPost("SignIn",Name = "Sign In")]
+        [HttpPost("SignIn", Name = "Sign In")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseVM), StatusCodes.Status400BadRequest)]
         public IActionResult SignIn(string email, string password)
         {
             var result = _accountService.SignIn(email, password);
             if (result != null)
-            {              
+            {
                 return Ok(result);
             }
             return BadRequest(new ResponseVM
             {
                 Message = "Wrong Email Or Password",
-                Errors = new string[] {"Email or Password Do Not Match"}
+                Errors = new string[] { "Email or Password Do Not Match" }
             });
         }
 
@@ -154,7 +153,7 @@ namespace RentingCarAPI.Controllers
                     return BadRequest(new ResponseVM
                     {
                         Message = "Cannot Update Account",
-                        Errors = new string[] {"Error While Updating to Database"}
+                        Errors = new string[] { "Error While Updating to Database" }
                     });
                 }
 
@@ -230,7 +229,7 @@ namespace RentingCarAPI.Controllers
                 return BadRequest(new ResponseVM
                 {
                     Message = "Cannot Update Account",
-                    Errors = new string[] {ex.Message }
+                    Errors = new string[] { ex.Message }
                 });
             }
         }
@@ -243,7 +242,8 @@ namespace RentingCarAPI.Controllers
             var account = _accountService.GetAccountProfileById(id);
             if (account == null)
             {
-                return NotFound(new ResponseVM {
+                return NotFound(new ResponseVM
+                {
                     Message = "Cannot Find Profile",
                     Errors = new string[] { "There's No Profile With ID " + id }
                 });

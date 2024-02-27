@@ -1,10 +1,5 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarDAO
 {
@@ -45,6 +40,30 @@ namespace RentingCarDAO
             try
             {
                 return db.Set<Role>().Where(x => x.RoleId == id).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+        public bool Add(Role role)
+        {
+            try
+            {
+                Role existRole = db.Set<Role>()
+                    .FirstOrDefault(x => x.RoleName.Equals(role.RoleName));
+                if (existRole != null)
+                {
+                    return false;
+                }
+                var checkExist = db.Accounts.Find(role.RoleId);
+                if (checkExist != null)
+                {
+                    db.Entry(checkExist).State = EntityState.Detached;
+                }
+                db.Add(role);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception)
             {

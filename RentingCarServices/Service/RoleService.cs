@@ -1,11 +1,6 @@
 ﻿using BusinessObjects.Models;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarServices.Service
 {
@@ -16,6 +11,11 @@ namespace RentingCarServices.Service
         public RoleService(IRoleRepository roleRepository)
         {
             _roleRepository = roleRepository;
+        }
+
+        public bool Add(Role role)
+        {
+            return _roleRepository.Add(role);
         }
 
         public Role? GetRoleById(long id)

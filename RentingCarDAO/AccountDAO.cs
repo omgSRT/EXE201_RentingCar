@@ -1,11 +1,6 @@
 ﻿using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
 using RentingCarDAO.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarDAO
 {
@@ -77,7 +72,7 @@ namespace RentingCarDAO
                     .Include("Role")
                     .Include("Status")
                     .Select(m => new AccountProfileDTO
-                    {                        
+                    {
                         UserName = m.UserName,
                         Email = m.Email,
                         Address = m.Address,
@@ -133,16 +128,17 @@ namespace RentingCarDAO
 
         }
 
-        public bool UpdateProfile (Account newAccount)
+        public bool UpdateProfile(Account newAccount)
         {
             try
             {
                 db.Update(newAccount);
                 db.SaveChanges();
                 return true;
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                throw new Exception ("Update fail");
+                throw new Exception("Update fail");
             }
         }
 

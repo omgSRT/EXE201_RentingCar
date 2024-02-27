@@ -3,11 +3,6 @@ using Microsoft.Extensions.Configuration;
 using RentingCarDAO.DTO;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentingCarServices.Service
 {
@@ -27,7 +22,7 @@ namespace RentingCarServices.Service
             try
             {
                 IEnumerable<Vehicle> vehicleList = _vehicleRepository.GetVehicles();
-                if(vehicleList == null)
+                if (vehicleList == null)
                 {
                     return new List<VehicleDTO>();
                 }
@@ -42,22 +37,73 @@ namespace RentingCarServices.Service
                         Passengers = v.Passengers,
                         ModelType = v.ModelType,
                         TypeName = v.VehicleType?.TypeName,
-                        ImagesLink = v.VehicleImages?.FirstOrDefault()?.ToString(),
+                        VehicleImage = v.VehicleImages?.FirstOrDefault()?.ToString(),
                     }).Where(dto => dto != null).ToList();
                     return vehicleDTOs;
                 }
-                
-            }catch (Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
 
         public Vehicle? GetVehicleById(long id)
         {
             return _vehicleRepository.GetVehicleById(id);
 
+        }
+
+        public bool AddVehicle(Vehicle vehicle)
+        {
+            return _vehicleRepository.AddVehicle(vehicle);
+        }
+
+        public bool AddVehicleImage(VehicleImage image)
+        {
+            return _vehicleRepository.AddVehicleImage(image);
+        }
+
+        public bool UpdateVehicle(Vehicle vehicle)
+        {
+            return _vehicleRepository.UpdateVehicle(vehicle);
+        }
+
+        public bool RemoveVehicle(Vehicle vehicle)
+        {
+            return _vehicleRepository.RemoveVehicle(vehicle);
+        }
+
+        public bool UpdateVehicleImage(VehicleImage image)
+        {
+            return _vehicleRepository.UpdateVehicleImage(image);
+        }
+
+        public bool RemoveVehicleImage(VehicleImage image)
+        {
+            return _vehicleRepository.RemoveVehicleImage(image);
+        }
+
+        public List<VehicleImage> GetVehicleImages()
+        {
+            return _vehicleRepository.GetVehicleImages().ToList();
+        }
+
+        public List<Vehicle> GetVehicles()
+        {
+            return _vehicleRepository.GetVehicles().ToList();
+        }
+
+        public bool DeleteVehicle(Vehicle vehicle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteVehicleImage(VehicleImage image)
+        {
+            throw new NotImplementedException();
         }
     }
 }
