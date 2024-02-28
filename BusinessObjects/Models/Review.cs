@@ -26,12 +26,12 @@ namespace BusinessObjects.Models
         public long StatusId { get; set; }
 
         [JsonIgnore]
-        public virtual Account Account { get; set; } = null!;
+        public virtual Account? Account { get; set; } = null!;
         [JsonIgnore]
-        public virtual Status Status { get; set; } = null!;
+        public virtual Status? Status { get; set; } = null!;
         [JsonIgnore]
-        public virtual Vehicle Vehicle { get; set; } = null!;
+        public virtual Vehicle? Vehicle { get; set; } = null!;
         [JsonIgnore]
-        public virtual ICollection<ReviewImage> ReviewImages { get; set; }
+        public virtual ICollection<ReviewImage>? ReviewImages { get; set; }
     }
 }

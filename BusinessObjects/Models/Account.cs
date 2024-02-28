@@ -27,14 +27,14 @@ namespace BusinessObjects.Models
         public long StatusId { get; set; }
 
         [JsonIgnore]
-        public virtual Role Role { get; set; } = null!;
+        public virtual Role? Role { get; set; } = null!;
         [JsonIgnore]
-        public virtual Status Status { get; set; } = null!;
+        public virtual Status? Status { get; set; } = null!;
         [JsonIgnore]
-        public virtual ICollection<ImagesLicenseCard> ImagesLicenseCards { get; set; }
+        public virtual ICollection<ImagesLicenseCard>? ImagesLicenseCards { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual ICollection<Reservation>? Reservations { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Review>? Reviews { get; set; }
     }
 }

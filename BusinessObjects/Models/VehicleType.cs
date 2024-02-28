@@ -18,6 +18,6 @@ namespace BusinessObjects.Models
         public string? TypeName { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Vehicle> Vehicles { get; set; }
+        public virtual ICollection<Vehicle>? Vehicles { get; set; }
     }
 }

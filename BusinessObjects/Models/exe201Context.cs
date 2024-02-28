@@ -103,7 +103,7 @@ namespace BusinessObjects.Models
             modelBuilder.Entity<ImagesLicenseCard>(entity =>
             {
                 entity.HasKey(e => e.ImagesId)
-                    .HasName("PK__Images_L__FA2651F7B7098611");
+                    .HasName("PK__Images_L__FA2651F7B96FC3A1");
 
                 entity.ToTable("Images_License_Card");
 
@@ -215,7 +215,7 @@ namespace BusinessObjects.Models
             modelBuilder.Entity<ReviewImage>(entity =>
             {
                 entity.HasKey(e => e.ImagesId)
-                    .HasName("PK__Review_I__FA2651F772C0C80A");
+                    .HasName("PK__Review_I__FA2651F7F5F3B21C");
 
                 entity.ToTable("Review_Images");
 
@@ -286,8 +286,20 @@ namespace BusinessObjects.Models
                     .IsUnicode(false)
                     .HasColumnName("license_plate");
 
+                entity.Property(e => e.Location)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("location")
+                    .IsFixedLength();
+
+                entity.Property(e => e.ModelType)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("model_type")
+                    .IsFixedLength();
+
                 entity.Property(e => e.Options)
-                    .HasMaxLength(100)
+                    .HasMaxLength(4000)
                     .IsUnicode(false)
                     .HasColumnName("options");
 
@@ -331,7 +343,7 @@ namespace BusinessObjects.Models
             modelBuilder.Entity<VehicleImage>(entity =>
             {
                 entity.HasKey(e => e.ImagesId)
-                    .HasName("PK__Vehicle___FA2651F72F8F7C6A");
+                    .HasName("PK__Vehicle___FA2651F7973392F8");
 
                 entity.ToTable("Vehicle_Images");
 

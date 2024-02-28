@@ -37,12 +37,12 @@ builder.Services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 
 //builder.Services.AddScoped<IConfiguration>();
 //builder.Services.AddSingleton<UserManager>();
 //builder.Services.AddSingleton<SignInManager>();
-
+builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IVehicleTypeService, VehicleTypeService>();
 builder.Services.AddScoped<IRoleService, RoleService>();

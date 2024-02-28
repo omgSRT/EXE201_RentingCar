@@ -26,7 +26,7 @@ namespace BusinessObjects.Models
         public double TotalPrice { get; set; }
         public long AccountId { get; set; }
 
-        public virtual Account Account { get; set; } = null!;
-        public virtual ICollection<Vehicle> Vehicles { get; set; }
+        public virtual Account? Account { get; set; } = null!;
+        public virtual ICollection<Vehicle>? Vehicles { get; set; }
     }
 }
