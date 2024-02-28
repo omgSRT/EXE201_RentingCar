@@ -21,6 +21,7 @@ namespace RentingCarServices.ServiceInterface
         string SignIn(string email, string password);
 
         public bool UpdateAccount(int id, NewProfile newProfile);
+        public bool UpdateAccount(Account account);
 
         public Account GetAccountById(int id);
 

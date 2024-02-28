@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RentingCarDAO.DTO;
+using RentingCarRepositories.Repository;
 using RentingCarRepositories.RepositoryInterface;
 using RentingCarServices.ServiceInterface;
 using System;
@@ -160,6 +161,17 @@ namespace RentingCarServices.Service
                 
             }
             catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool UpdateAccount(Account account)
+        {
+            try
+            {
+                return _accountRepository.UpdateAccount(account);
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
